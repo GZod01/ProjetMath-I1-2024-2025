@@ -1,8 +1,21 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+header('Content-Type:text/html;charset=utf-8');
+mb_internal_encoding("utf-8");
+?>
+<meta charset="utf-8">
+<?php
+
+
+
+
 //initial : $charlist = "abcdefghijklmnopqrstuvwxyz ";
 
-$charlist = "abcdefghijklmnopqrstuvwxyz &é(-è_çà)=$1234567890?.!,;:*/+-";
-$charcodeslist= str_split($charlist);
+$charlist = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&é(-è_çà)=$1234567890?.!,;:*/\\+-'\"#{[|@]}%µ§";
+//print_r($charlist);
+$charcodeslist= mb_str_split($charlist);
 $charcodes =[];
 
 foreach($charcodeslist as $i=>$cc){
@@ -17,18 +30,18 @@ function multiply(array $matrix_a, array $pair_b){
 }
 function mod27($a){
     global $charlist;
-    return (strlen($charlist)+($a%strlen($charlist)))%strlen($charlist);
+    $modval=mb_strlen($charlist)-1;
+    return ($modval+($a%$modval))%$modval;
 }
 
 
 function encrypt($message,$base){
     global $charcodes,$charcodeslist;
     $message_encrypted="";
-    $message = strtolower($message);
-    foreach(str_split($message,2) as $char){
-        $chars = str_split($char);
-        if(!isset($chars[1])) $chars[1]=" ";
-        if($chars[1]=="")$chars[1]=" ";
+    foreach(mb_str_split($message,2) as $char){
+        $chars = mb_str_split($char);
+//      print_r($chars);
+//      echo "\n";
         $charcodes_pair = [$charcodes[$chars[0]],$charcodes[$chars[1]]];
         // print_r($charcodes_pair);
         // print_r($chars[1]);
@@ -37,17 +50,20 @@ function encrypt($message,$base){
         $charcodes_encrypted[0] = mod27($charcodes_encrypted[0]);
         $charcodes_encrypted[1] = mod27($charcodes_encrypted[1]);
         // print_r($charcodes_encrypted);
-        // print_r($charcodes_encrypted);
+        //print_r($charcodes_encrypted);
         $message_encrypted.= $charcodeslist[$charcodes_encrypted[0]].$charcodeslist[$charcodes_encrypted[1]];
         // echo $message_encrypted;
     }
     return $message_encrypted;
 }
 function decrypt($message,$decryptbase){
+    return encrypt($message,$decryptbase);
+}
+/*function decrypt($message,$decryptbase){
     global $charcodes,$charcodeslist;
     $message_decrypted="";
-    foreach(str_split($message,2) as $char){
-        $chars = str_split($char);
+    foreach(mb_str_split($message,2) as $char){
+        $chars = mb_str_split($char);
         if(!isset($chars[1])) $chars[1]=" ";
         if($chars[1]=="")$chars[1]=" ";
         $charcodes_pair = [$charcodes[$chars[0]],$charcodes[$chars[1]]];
@@ -56,36 +72,46 @@ function decrypt($message,$decryptbase){
         // print_r($charcodes_decrypted);
         $charcodes_decrypted[0] = mod27($charcodes_decrypted[0]);
         $charcodes_decrypted[1] = mod27($charcodes_decrypted[1]);
-        // print_r($charcodes_decrypted);
         $message_decrypted.= $charcodeslist[$charcodes_decrypted[0]].$charcodeslist[$charcodes_decrypted[1]];
     }
     return $message_decrypted;
-}
-
-if(isset($_POST["message"])){
-    $baseArr = str_split($_POST["base"]??"1237");
+}*/
+$message;
+$baseStr;
+if(isset($_REQUEST["message"])){
+    $baseArr = explode(",",$_REQUEST["base"]??"1,2,3,7");
     if(count($baseArr)!=4) $baseArr = [1,2,3,7];
-    {
-        [$a,$b,$c,$d] = $baseArr;
-        if($a*$d-$b*$c!=1){
-            echo "bad determinant<br>\n";
-            $baseArr = [1,2,3,7];
-        }
+    
+    [$a,$b,$c,$d] = $baseArr;
+    if($a*$d-$b*$c!=1){
+        echo "bad determinant<br>\n";
+        $baseArr = [1,2,3,7];
     }
+    $baseStr=implode("",$baseArr);
+    
     $base = [[(int)$baseArr[0],(int)$baseArr[1]],[(int)$baseArr[2],(int)$baseArr[3]]];
     $baseInv = [[(int)$baseArr[3],-(int)$baseArr[1]],[-(int)$baseArr[2],(int)$baseArr[0]]];
-    $message = $_POST["message"];
-    $action = $_POST["action"]??"encrypt";
+    $message = $_REQUEST["message"];
+    $nmessage="";
+    foreach(mb_str_split($message) as $char){
+        if(!isset($charcodes[$char])) $char=iconv('UTF-8','ASCII//TRANSLIT',$char);
+        if(!isset($charcodes[$char])) $char=" ";
+    }
+    if(mb_strlen($message)%2==1) $nmessage.=" ";
+    $message=$nmessage;
+    $action = $_REQUEST["action"]??"encrypt";
+    echo "<p><pre>";
     if($action=="decrypt"){
         echo decrypt($message,$baseInv);
     }else{
         echo encrypt($message,$base);
     }
+    echo "</pre></p>";
 }
 ?>
-<form action="" method="post">
-    <input type=text name="message" value="<?=htmlspecialchars($_POST["message"]??"")?>">
-    <input type=text name="base" value="<?=htmlspecialchars($_POST["base"]??"1237")?>" required=false optional>
+<form action="" method="get">
+    <input type=text name="message" value="<?=htmlspecialchars($message??"")?>">
+    <input type=text name="base" value="<?=htmlspecialchars($baseStr??"1,2,3,7")?>" required=false optional>
     <input type=submit name="action" value="encrypt">
     <input type=submit name="action" value="decrypt">
 </form>
