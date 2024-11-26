@@ -11,18 +11,15 @@ mb_internal_encoding("utf-8");
 
 
 
-//initial : $charlist = "abcdefghijklmnopqrstuvwxyz ";
 
 $charlist = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&é(-è_çà)=$1234567890?.!,;:*/\\+-'\"#{[|@]}%µ§";
-//print_r($charlist);
+
 $charcodeslist= mb_str_split($charlist);
 $charcodes =[];
 
 foreach($charcodeslist as $i=>$cc){
     $charcodes[$cc]=$i;
 }
-// print_r($charcodes);
-// var_dump(27+-1%27);
 function multiply(array $matrix_a, array $pair_b){
     [[$a,$b],[$c,$d]]=$matrix_a;
     [$x,$y]=$pair_b;
@@ -40,42 +37,17 @@ function encrypt($message,$base){
     $message_encrypted="";
     foreach(mb_str_split($message,2) as $char){
         $chars = mb_str_split($char);
-//      print_r($chars);
-//      echo "\n";
         $charcodes_pair = [$charcodes[$chars[0]],$charcodes[$chars[1]]];
-        // print_r($charcodes_pair);
-        // print_r($chars[1]);
         $charcodes_encrypted= multiply($base,$charcodes_pair);
-        // print_r($charcodes_encrypted);
         $charcodes_encrypted[0] = mod27($charcodes_encrypted[0]);
         $charcodes_encrypted[1] = mod27($charcodes_encrypted[1]);
-        // print_r($charcodes_encrypted);
-        //print_r($charcodes_encrypted);
         $message_encrypted.= $charcodeslist[$charcodes_encrypted[0]].$charcodeslist[$charcodes_encrypted[1]];
-        // echo $message_encrypted;
     }
     return $message_encrypted;
 }
 function decrypt($message,$decryptbase){
     return encrypt($message,$decryptbase);
 }
-/*function decrypt($message,$decryptbase){
-    global $charcodes,$charcodeslist;
-    $message_decrypted="";
-    foreach(mb_str_split($message,2) as $char){
-        $chars = mb_str_split($char);
-        if(!isset($chars[1])) $chars[1]=" ";
-        if($chars[1]=="")$chars[1]=" ";
-        $charcodes_pair = [$charcodes[$chars[0]],$charcodes[$chars[1]]];
-        // print_r($charcodes_pair);
-        $charcodes_decrypted = multiply($decryptbase,$charcodes_pair);
-        // print_r($charcodes_decrypted);
-        $charcodes_decrypted[0] = mod27($charcodes_decrypted[0]);
-        $charcodes_decrypted[1] = mod27($charcodes_decrypted[1]);
-        $message_decrypted.= $charcodeslist[$charcodes_decrypted[0]].$charcodeslist[$charcodes_decrypted[1]];
-    }
-    return $message_decrypted;
-}*/
 $message;
 $baseStr;
 if(isset($_REQUEST["message"])){
