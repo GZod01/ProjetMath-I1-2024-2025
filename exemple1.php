@@ -45,6 +45,7 @@ function encrypt($message,$base){
     }
     return $message_encrypted;
 }
+
 function decrypt($message,$decryptbase){
     return encrypt($message,$decryptbase);
 }
