@@ -14,11 +14,11 @@ mb_internal_encoding("utf-8");
 
 $charlist = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&é(-è_çà)=$1234567890?.!,;:*/\\+-'\"#{[|@]}%µ§";
 
-$charcodeslist= mb_str_split($charlist);
-$charcodes =[];
+$char_codes_list= mb_str_split($charlist);
+$char_codes =[];
 
-foreach($charcodeslist as $i=>$cc){
-    $charcodes[$cc]=$i;
+foreach($char_codes_list as $i=>$cc){
+    $char_codes[$cc]=$i;
 }
 function multiply(array $matrix_a, array $pair_b){
     [[$a,$b],[$c,$d]]=$matrix_a;
@@ -27,27 +27,27 @@ function multiply(array $matrix_a, array $pair_b){
 }
 function mod27($a){
     global $charlist;
-    $modval=mb_strlen($charlist)-1;
-    return ($modval+($a%$modval))%$modval;
+    $mod_val=mb_strlen($charlist)-1;
+    return ($mod_val+($a%$mod_val))%$mod_val;
 }
 
 
 function encrypt($message,$base){
-    global $charcodes,$charcodeslist;
+    global $char_codes,$char_codes_list;
     $message_encrypted="";
     foreach(mb_str_split($message,2) as $char){
         $chars = mb_str_split($char);
-        $charcodes_pair = [$charcodes[$chars[0]],$charcodes[$chars[1]]];
-        $charcodes_encrypted= multiply($base,$charcodes_pair);
-        $charcodes_encrypted[0] = mod27($charcodes_encrypted[0]);
-        $charcodes_encrypted[1] = mod27($charcodes_encrypted[1]);
-        $message_encrypted.= $charcodeslist[$charcodes_encrypted[0]].$charcodeslist[$charcodes_encrypted[1]];
+        $char_codes_pair = [$char_codes[$chars[0]],$char_codes[$chars[1]]];
+        $char_codes_encrypted= multiply($base,$char_codes_pair);
+        $char_codes_encrypted[0] = mod27($char_codes_encrypted[0]);
+        $char_codes_encrypted[1] = mod27($char_codes_encrypted[1]);
+        $message_encrypted.= $char_codes_list[$char_codes_encrypted[0]].$char_codes_list[$char_codes_encrypted[1]];
     }
     return $message_encrypted;
 }
 
-function decrypt($message,$decryptbase){
-    return encrypt($message,$decryptbase);
+function decrypt($message,$decrypt_base){
+    return encrypt($message,$decrypt_base);
 }
 $message;
 $baseStr;
@@ -65,13 +65,13 @@ if(isset($_REQUEST["message"])){
     $base = [[(int)$baseArr[0],(int)$baseArr[1]],[(int)$baseArr[2],(int)$baseArr[3]]];
     $baseInv = [[(int)$baseArr[3],-(int)$baseArr[1]],[-(int)$baseArr[2],(int)$baseArr[0]]];
     $message = $_REQUEST["message"];
-    $nmessage="";
+    $n_message="";
     foreach(mb_str_split($message) as $char){
-        if(!isset($charcodes[$char])) $char=iconv('UTF-8','ASCII//TRANSLIT',$char);
-        if(!isset($charcodes[$char])) $char=" ";
+        if(!isset($char_codes[$char])) $char=iconv('UTF-8','ASCII//TRANSLIT',$char);
+        if(!isset($char_codes[$char])) $char=" ";
     }
-    if(mb_strlen($message)%2==1) $nmessage.=" ";
-    $message=$nmessage;
+    if(mb_strlen($message)%2==1) $n_message.=" ";
+    $message=$n_message;
     $action = $_REQUEST["action"]??"encrypt";
     echo "<p><pre>";
     if($action=="decrypt"){
