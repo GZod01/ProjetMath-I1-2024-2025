@@ -20,15 +20,43 @@ $char_codes =[];
 foreach($char_codes_list as $i=>$cc){
     $char_codes[$cc]=$i;
 }
-function multiply(array $matrix_a, array $pair_b){
+function showMultiply($matrix_a,$pair_b){
+    global $char_codes_list;
     [[$a,$b],[$c,$d]]=$matrix_a;
+    [$x,$y]=$pair_b;
+    echo "<table border=1>";
+    echo "<tr><td>$a</td><td>$b</td></tr>";
+    echo "<tr><td>$c</td><td>$d</td></tr>";
+    echo "</table>";
+    echo "<table border=1>";
+    echo "<tr><td>$x</td></tr>";
+    echo "<tr><td>$y</td></tr>";
+    echo "</table>";
+    echo "<table border=1>";
+    echo "<tr><td>".($a*$x+$b*$y)."</td></tr>";
+    echo "<tr><td>".($c*$x+$d*$y)."</td></tr>";
+    echo "</table>";
+    echo "<table border=1>";
+    echo "<tr><td>".$char_codes_list[mod27($a*$x+$b*$y)]."</td></tr>";
+    echo "<tr><td>".$char_codes_list[mod27($c*$x+$d*$y)]."</td></tr>";
+    echo "</table>";
+}
+
+function multiply(array $matrix_a, array $pair_b){
+    showMultiply($matrix_a,$pair_b);
+    [[$a,$b],[$c,$d]]=$matrix_a;
+    $divide = 1/($a*$d-$b*$c);
+    $a*=$divide;
+    $b*=$divide;
+    $c*=$divide;
+    $d*=$divide;
     [$x,$y]=$pair_b;
     return [$a*$x+$b*$y,$c*$x+$d*$y];
 }
 function mod27($a){
     global $charlist;
     $mod_val=mb_strlen($charlist)-1;
-    return ($mod_val+($a%$mod_val))%$mod_val;
+    return fmod(($mod_val+(fmod($a,$mod_val))),$mod_val);
 }
 
 
@@ -56,11 +84,11 @@ if(isset($_REQUEST["message"])){
     if(count($baseArr)!=4) $baseArr = [1,2,3,7];
     
     [$a,$b,$c,$d] = $baseArr;
-    if($a*$d-$b*$c!=1){
-        echo "bad determinant<br>\n";
+    if($a*$d-$b*$c==0){
+        echo "bad determinant can't be 0<br>\n";
         $baseArr = [1,2,3,7];
     }
-    $baseStr=implode("",$baseArr);
+    $baseStr=implode(",",$baseArr);
     
     $base = [[(int)$baseArr[0],(int)$baseArr[1]],[(int)$baseArr[2],(int)$baseArr[3]]];
     $baseInv = [[(int)$baseArr[3],-(int)$baseArr[1]],[-(int)$baseArr[2],(int)$baseArr[0]]];
@@ -69,6 +97,7 @@ if(isset($_REQUEST["message"])){
     foreach(mb_str_split($message) as $char){
         if(!isset($char_codes[$char])) $char=iconv('UTF-8','ASCII//TRANSLIT',$char);
         if(!isset($char_codes[$char])) $char=" ";
+        $n_message.=$char;
     }
     if(mb_strlen($message)%2==1) $n_message.=" ";
     $message=$n_message;
