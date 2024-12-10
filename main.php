@@ -45,18 +45,18 @@ function showMultiply($matrix_a,$pair_b){
 function multiply(array $matrix_a, array $pair_b){
     showMultiply($matrix_a,$pair_b);
     [[$a,$b],[$c,$d]]=$matrix_a;
-    $divide = 1/($a*$d-$b*$c);
-    $a*=$divide;
-    $b*=$divide;
-    $c*=$divide;
-    $d*=$divide;
+    // $divide = 1/($a*$d-$b*$c);
+    // $a*=$divide;
+    // $b*=$divide;
+    // $c*=$divide;
+    // $d*=$divide;
     [$x,$y]=$pair_b;
     return [$a*$x+$b*$y,$c*$x+$d*$y];
 }
 function mod27($a){
     global $charlist;
     $mod_val=mb_strlen($charlist)-1;
-    return fmod(($mod_val+(fmod($a,$mod_val))),$mod_val);
+    return ($mod_val+($a%$mod_val))%$mod_val;
 }
 
 
@@ -84,8 +84,8 @@ if(isset($_REQUEST["message"])){
     if(count($baseArr)!=4) $baseArr = [1,2,3,7];
     
     [$a,$b,$c,$d] = $baseArr;
-    if($a*$d-$b*$c==0){
-        echo "bad determinant can't be 0<br>\n";
+    if($a*$d-$b*$c!=1){
+        echo "bad determinant, must be one<br>\n";
         $baseArr = [1,2,3,7];
     }
     $baseStr=implode(",",$baseArr);
