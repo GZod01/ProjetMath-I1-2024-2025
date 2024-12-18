@@ -8,12 +8,7 @@ mb_internal_encoding("utf-8");
 <meta charset="utf-8">
 <?php
 
-
-
-
-
 $charlist = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&é(-è_çà)=$1234567890?.!,;:*/\\+-'\"#{[|@]}%µ§";
-
 $char_codes_list = mb_str_split($charlist);
 $char_codes = [];
 
@@ -178,6 +173,7 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
 $preoutput = ob_get_clean();
 ob_end_clean();
 ?>
+<body>
 <div class=superLine>
 <?=$echostr?>
 <form action="" method="get">
@@ -203,6 +199,7 @@ ob_end_clean();
     <summary>show debug</summary>
     <?= $preoutput ?>
 </div>
+
 <style>
     body{
         display: flex;
@@ -278,3 +275,4 @@ ob_end_clean();
         }
     }
 </style>
+</body>
