@@ -74,7 +74,6 @@ function mod27($a)
     return ($mod_val + ($a % $mod_val)) % $mod_val;
 }
 
-
 function encrypt($message, $base)
 {
     global $char_codes, $char_codes_list;
