@@ -155,12 +155,19 @@ if(isset($_REQUEST["rows_amount"])){
 }
 if(isset($_REQUEST["base"])){
     if(is_array($_REQUEST["base"])){
-        $baseArr=$_REQUEST["base"];
+        $baseArr=castIntArray($_REQUEST["base"]);
         $base = arrToMatrix($baseArr,$rows_amount);
     }
     else{
-        $baseArr=str_contains(",",$_REQUEST["base"])?explode(",",$_REQUEST["base"]):str_split($_REQUEST["base"]);
+        $baseArr=castIntArray(str_contains(",",$_REQUEST["base"])?explode(",",$_REQUEST["base"]):str_split($_REQUEST["base"]));
     }
+}
+function castIntArray($arr){
+    $narr=[];
+    foreach($arr as $a){
+        $narr[]=(int)$a;
+    }
+    return $narr;
 }
 // calcul det of square matrix of size n x n with n variable
 function calculDet($mat) {
@@ -201,7 +208,7 @@ function arrToMatrix($baseArr,$n){
     $k=0;
     for($i=0;$i<$n;$i++){
         for($j=0;$j<$n;$j++){
-            echo $k;
+            // echo $k;
             $base[$i][$j]=$baseArr[$k];
             $k++;
         }
