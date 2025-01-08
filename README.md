@@ -9,4 +9,3 @@ Live demo:
 https://api.cybergamma.group/projetmathsencrypt.php = main.php
 
 ## Thème choisi: Mathématiques, espionnage et piratage informatique
-

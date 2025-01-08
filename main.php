@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 header('Content-Type:text/html;charset=utf-8');
 mb_internal_encoding("utf-8");
 ?>
+<title>SuperEncrypt</title>
 <meta charset="utf-8">
 <?php
 
@@ -141,12 +142,17 @@ function decrypt($message, $decrypt_base)
 {
     return encrypt($message, $decrypt_base);
 }
+$base=[[1,2],[3,7]];
+$rows_amount=2;
 $message;
 $baseStr;
 $echostr="";
 $preoutput ="";
 ob_start();
 $baseArr=[1,2,3,7];
+if(isset($_REQUEST["rows_amount"])){
+    $rows_amount=$_REQUEST["rows_amount"];
+}
 if(isset($_REQUEST["base"])){
     if(is_array($_REQUEST["base"])){
         $baseArr=$_REQUEST["base"];
@@ -155,18 +161,93 @@ if(isset($_REQUEST["base"])){
         $baseArr=str_contains(",",$_REQUEST["base"])?explode(",",$_REQUEST["base"]):str_split($_REQUEST["base"]);
     }
 }
+// calcul det of square matrix of size n x n with n variable
+function calculDet($mat, $n) {
+    $det = 1;
+    $total = 1;
+    $temp = array_fill(0, $n, 0);
+    for ($i = 0; $i < $n; $i++) {
+        $index = $i;
+        while ($index < $n && $mat[$index][$i] === 0) {
+            $index++;
+        }
+        if ($index === $n) {
+            continue;
+        }
+        if ($index !== $i) {
+            for ($j = 0; $j < $n; $j++) {
+                list($mat[$i][$j], $mat[$index][$j]) = 
+                array($mat[$index][$j], $mat[$i][$j]);
+            }
+            $det *= pow(-1, $index - $i);
+        }
+        for ($j = 0; $j < $n; $j++) {
+            $temp[$j] = $mat[$i][$j];
+        }
+        for ($j = $i + 1; $j < $n; $j++) {
+            $num1 = $temp[$i];
+            $num2 = $mat[$j][$i];
+            for ($k = 0; $k < $n; $k++) {
+                $mat[$j][$k] = 
+                    $num1 * $mat[$j][$k] - 
+                    $num2 * $temp[$k];
+            }
+            $total *= $num1;
+        }
+    }
+    for ($i = 0; $i < $n; $i++) {
+        $det *= $mat[$i][$i];
+    }
+    return $det / $total;
+}
+function arrToMatrix($baseArr,$n){
+    $base=[];
+    for($i=0;$i<$n;$i++){
+        for($j=0;$j<$n;$j++){
+            $base[$i][$j]=$baseArr[$i*$n+$j];
+        }
+    }
+    return $base;
+}
+function matInv($base){
+    $n=sizeof($base);
+    $det=calculDet($base,$n);
+    $inv=[];
+    for($i=0;$i<$n;$i++){
+        for($j=0;$j<$n;$j++){
+            $inv[$i][$j]=pow(-1,$i+$j)*calculDet(minor($base,$i,$j),$n-1)/$det;
+        }
+    }
+    return $inv;
+}
+function minor($base,$i,$j){
+    $n=sizeof($base);
+    $minor=[];
+    for($ii=0;$ii<$n;$ii++){
+        for($jj=0;$jj<$n;$jj++){
+            if($ii!=$i and $jj!=$j){
+                $minor[$ii-($ii>$i)][$jj-($jj>$j)]=$base[$ii][$jj];
+            }
+        }
+    }
+    return $minor;
+}
 if (count($baseArr) != 4) $baseArr = [1, 2, 3, 7];
 if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
-
-    [$a, $b, $c, $d] = $baseArr;
-    if ($a * $d - $b * $c != 1) {
+    if(sizeof($baseArr)<$rows_amount){
+        echo "bad base, must have rows_amount rows<br>\n";
+        $baseArr = [1, 2, 3, 7];
+        $rows_amount=2;
+    }
+    if (calculDet(arrToMatrix($baseArr,$rows_amount),$rows_amount)!=1) {
         echo "bad determinant, must be one<br>\n";
         $baseArr = [1, 2, 3, 7];
+        $rows_amount=2;
     }
     $baseStr = implode(",", $baseArr);
 
-    $base = [[(int)$baseArr[0], (int)$baseArr[1]], [(int)$baseArr[2], (int)$baseArr[3]]];
-    $baseInv = [[(int)$baseArr[3], -(int)$baseArr[1]], [-(int)$baseArr[2], (int)$baseArr[0]]];
+    $base = arrToMatrix($baseArr,$rows_amount);
+    $baseInv = matInv($base);
     $message = $_REQUEST["message"];
     $n_message = "";
     foreach (mb_str_split($message) as $char) {
@@ -174,7 +255,7 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
         if (!isset($char_codes[$char])) $char = " ";
         $n_message .= $char;
     }
-    if (mb_strlen($message) % 2 == 1) $n_message .= " ";
+    if (mb_strlen($message) % $rows_amount == 1) $n_message .= " ";
     $message = $n_message;
     $action = $_REQUEST["action"] ?? "encrypt";
     echo "<div class=calculshow>";
@@ -208,17 +289,18 @@ ob_end_clean();
 <?=$echostr?>
 <form action="" method="get">
     <input type=text name="message" value="<?= htmlspecialchars($message ?? "") ?>">
+    <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous): 
+        <input type=number name="rows_amount" value="<?=htmlspecialchars($rows_amount)?>" required=true></label>
     <!-- <input type=text name="base" value="<?= htmlspecialchars($baseStr ?? "1,2,3,7") ?>" required=false optional> -->
     <div class=equationstart>
         <table>
+            <?php for($i=0;$i<$rows_amount;$i++){?>
             <tr>
-                <td><input type=number name="base[]" value="<?= htmlspecialchars($baseArr[0] ?? "1") ?>" required=true></td>
-                <td><input type=number name="base[]" value="<?= htmlspecialchars($baseArr[1] ?? "2") ?>" required=true></td>
+                <?php for($j=0;$j<$rows_amount;$j++){?>
+                <td><input type=number name="base[]" value="<?= htmlspecialchars($base[$i][$j]) ?>" required=true></td>
+                <?php }?>
             </tr>
-            <tr>
-                <td><input type=number name="base[]" value="<?= htmlspecialchars($baseArr[2] ?? "3") ?>" required=true></td>
-                <td><input type=number name="base[]" value="<?= htmlspecialchars($baseArr[3] ?? "7") ?>" required=true></td>
-            </tr>
+            <?php }?>
         </table>
     </div>
     <input type=submit name="action" value="encrypt">
