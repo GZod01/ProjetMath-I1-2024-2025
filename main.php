@@ -163,43 +163,38 @@ if(isset($_REQUEST["base"])){
     }
 }
 // calcul det of square matrix of size n x n with n variable
-function calculDet($mat, $n) {
-    $det = 1;
-    $total = 1;
-    $temp = array_fill(0, $n, 0);
+function calculDet($mat) {
+    $n = count($mat);
+
+    // Cas de base : matrice 1x1
+    if ($n == 1) {
+        return $mat[0][0];
+    }
+
+    // Cas de base : matrice 2x2
+    if ($n == 2) {
+        return $mat[0][0] * $mat[1][1] - $mat[0][1] * $mat[1][0];
+    }
+
+    $det = 0;
     for ($i = 0; $i < $n; $i++) {
-        $index = $i;
-        while ($index < $n && $mat[$index][$i] === 0) {
-            $index++;
-        }
-        if ($index === $n) {
-            continue;
-        }
-        if ($index !== $i) {
-            for ($j = 0; $j < $n; $j++) {
-                list($mat[$i][$j], $mat[$index][$j]) = 
-                array($mat[$index][$j], $mat[$i][$j]);
-            }
-            $det *= pow(-1, $index - $i);
-        }
-        for ($j = 0; $j < $n; $j++) {
-            $temp[$j] = $mat[$i][$j];
-        }
-        for ($j = $i + 1; $j < $n; $j++) {
-            $num1 = $temp[$i];
-            $num2 = $mat[$j][$i];
+        // Calculer la sous-matrice en supprimant la première ligne et la colonne i
+        $subMat = [];
+        for ($j = 1; $j < $n; $j++) {
+            $row = [];
             for ($k = 0; $k < $n; $k++) {
-                $mat[$j][$k] = 
-                    $num1 * $mat[$j][$k] - 
-                    $num2 * $temp[$k];
+                if ($k != $i) {
+                    $row[] = $mat[$j][$k];
+                }
             }
-            $total *= $num1;
+            $subMat[] = $row;
         }
+
+        // Calculer le déterminant de la sous-matrice et l'ajouter à la somme
+        $det += $mat[0][$i] * pow(-1, $i) * calculDet($subMat);
     }
-    for ($i = 0; $i < $n; $i++) {
-        $det *= $mat[$i][$i];
-    }
-    return $det / $total;
+
+    return $det;
 }
 function arrToMatrix($baseArr,$n){
     $base=[];
@@ -258,7 +253,7 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
         if (!isset($char_codes[$char])) $char = " ";
         $n_message .= $char;
     }
-    if (mb_strlen($message) % $rows_amount == 1) $n_message .= " ";
+    while(mb_strlen($n_message) % $rows_amount !=0) $n_message .= " ";
     $message = $n_message;
     $action = $_REQUEST["action"] ?? "encrypt";
     echo "<div class=calculshow>";
