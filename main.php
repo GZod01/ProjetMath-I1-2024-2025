@@ -156,6 +156,7 @@ if(isset($_REQUEST["rows_amount"])){
 if(isset($_REQUEST["base"])){
     if(is_array($_REQUEST["base"])){
         $baseArr=$_REQUEST["base"];
+        $base = arrToMatrix($baseArr,$rows_amount);
     }
     else{
         $baseArr=str_contains(",",$_REQUEST["base"])?explode(",",$_REQUEST["base"]):str_split($_REQUEST["base"]);
