@@ -37,41 +37,61 @@ function strMatrix($t){
     $stroutput.="</table>";
     return $stroutput;
 }
+function matrixMul(array $mat,array $pair){
+    $retPair= [];
+    if(sizeof($pair)!=sizeof($mat)){
+        throw new Exception("Pair must have size of Mat");
+    }
+    for($i=0;$i<sizeof($pair);$i++){
+        $sum=0;
+        for($j=0;$j<sizeof($pair);$j++){
+            $sum+=$mat[$i][$j]+$pair[$j];
+        }
+        $retPair[$i]=$sum;
+    }
+    return $retPair;
+}
 function showPair($pair)
 {
     echo strMatrix($pair);
 }
+function charCodePair($pair){
+    global $char_codes_list;
+    $npair = [];
+    for($i=0;$i<sizeof($pair);$i++){
+        $npair[$i]=$char_codes_list[mod27($pair[$i])];
+    }
+    return $npair;
+}
+function rCharCodePair($pair){
+    global $char_codes;
+    $npair=[];
+    for($i=0;$i<sizeof($pair);$i++){
+        $npair[$i]=$char_codes[mod27($pair[$i])];
+    }
+    return $npair;
+}
 function showMultiply($matrix_a, $pair_b)
 {
     global $char_codes_list;
-    [[$a, $b], [$c, $d]] = $matrix_a;
-    [$x, $y] = $pair_b;
-    $char_x = $char_codes_list[$x];
-    $char_y = $char_codes_list[$y];
     showMatrix($matrix_a);
     echo "*";
-    showPair([$char_x, $char_y]);
+    showPair(charCodePair($pair_b));
     echo "=";
     showMatrix($matrix_a);
     echo "*";
-    showPair([$x, $y]);
+    showPair($pair_b);
     echo "=";
-    showPair([$a * $x + $b * $y, $c * $x + $d * $y]);
+    $retPair=matrixMul($matrix_a,$pair_b);
+    showPair($retPair);
     echo "=";
-    showPair([$char_codes_list[mod27($a * $x + $b * $y)], $char_codes_list[mod27($c * $x + $d * $y)]]);
+    showPair(charCodePair($retPair));
 }
 
 function multiply(array $matrix_a, array $pair_b)
 {
     showMultiply($matrix_a, $pair_b);
-    [[$a, $b], [$c, $d]] = $matrix_a;
-    // $divide = 1/($a*$d-$b*$c);
-    // $a*=$divide;
-    // $b*=$divide;
-    // $c*=$divide;
-    // $d*=$divide;
-    [$x, $y] = $pair_b;
-    return [$a * $x + $b * $y, $c * $x + $d * $y];
+    return matrixMul($matrix_a,$pair_b);
 }
 function mod27($a)
 {
@@ -79,7 +99,13 @@ function mod27($a)
     $mod_val = mb_strlen($charlist) - 1;
     return ($mod_val + ($a % $mod_val)) % $mod_val;
 }
-
+function mod27Mat($pair){
+    $npair=[];
+    for($i=0;$i<sizeof($pair);$i++){
+        $npair[$i]=mod27($pair[$i]);
+    }
+    return $npair;
+}
 function encrypt($message, $base)
 {
     global $char_codes, $char_codes_list;
@@ -92,7 +118,7 @@ function encrypt($message, $base)
     foreach (mb_str_split($message, 2) as $char) {
         echo "<div class=equationstart>";
         $chars = mb_str_split($char);
-        $char_codes_pair = [$char_codes[$chars[0]], $char_codes[$chars[1]]];
+        $char_codes_pair = rCharCodePair($chars);
         $ccpairslist[] = $char_codes_pair;
         showPair($chars);
         echo "=>";
@@ -104,9 +130,8 @@ function encrypt($message, $base)
     foreach ($ccpairslist as $char_codes_pair) {
         echo "<div class=equationstart>";
         $char_codes_encrypted = multiply($base, $char_codes_pair);
-        $char_codes_encrypted[0] = mod27($char_codes_encrypted[0]);
-        $char_codes_encrypted[1] = mod27($char_codes_encrypted[1]);
-        $message_encrypted .= $char_codes_list[$char_codes_encrypted[0]] . $char_codes_list[$char_codes_encrypted[1]];
+        $char_codes_encrypted=mod27Mat($char_codes_encrypted);
+        $message_encrypted .= implode("",charCodePair($char_codes_encrypted));
         echo "</div>";
     }
     return $message_encrypted;
