@@ -107,7 +107,7 @@ function mod27Mat($pair){
     }
     return $npair;
 }
-function encrypt($message, $base)
+function encrypt($message, $base,$rows_amount)
 {
     global $char_codes, $char_codes_list;
     $message_encrypted = "";
@@ -116,7 +116,7 @@ function encrypt($message, $base)
     echo "message: $message ";
     echo "in pairs = ";
     // echo "<wbr/>";
-    foreach (mb_str_split($message, 2) as $char) {
+    foreach (mb_str_split($message, $rows_amount) as $char) {
         echo "<div class=equationstart>";
         $chars = mb_str_split($char);
         $char_codes_pair = rCharCodePair($chars);
@@ -138,9 +138,9 @@ function encrypt($message, $base)
     return $message_encrypted;
 }
 
-function decrypt($message, $decrypt_base)
+function decrypt($message, $decrypt_base,$rows_amount)
 {
-    return encrypt($message, $decrypt_base);
+    return encrypt($message, $decrypt_base,$rows_amount);
 }
 $base=[[1,2],[3,7]];
 $rows_amount=2;
@@ -273,9 +273,9 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
     $echostr.="<fieldset class=encrypted>";
     $echostr.="<legend>Result message</legend>";
     if ($action == "decrypt") {
-        $echostr.=decrypt($message, $baseInv);
+        $echostr.=decrypt($message, $baseInv,$rows_amount);
     } else {
-        $echostr.=encrypt($message, $base);
+        $echostr.=encrypt($message, $base,$rows_amount);
     }
     $echostr.="</fieldset>";
     $echostr.="</div>";
