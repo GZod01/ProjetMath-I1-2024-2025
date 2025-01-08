@@ -12,6 +12,7 @@ $charlist = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&é(-è_çà)=
 $char_codes_list = mb_str_split($charlist);
 $char_codes = [];
 
+
 foreach ($char_codes_list as $i => $cc) {
     $char_codes[$cc] = $i;
 }
@@ -19,21 +20,26 @@ function showMatrix($matrix)
 {
     echo strMatrix($matrix);
 }
-function strMatrix($matrix){
-    [[$a, $b], [$c, $d]] = $matrix;
-    $stroutput= "<table border=1>";
-    $stroutput.= "<tr><td>$a</td><td>$b</td></tr>";
-    $stroutput.= "<tr><td>$c</td><td>$d</td></tr>";
-    $stroutput.= "</table>";
+function strMatrix($t){
+    $stroutput = "<table border=1>";
+    foreach($t as $row){
+        $stroutput.="<tr>";
+        if(is_array($row)){
+            foreach($row as $cell){
+                $stroutput.="<td>$cell</td>";
+            }
+        }
+        else{
+            $stroutput.="<td>$row</td>";
+        }
+        $stroutput.="</tr>";
+    }
+    $stroutput.="</table>";
     return $stroutput;
 }
 function showPair($pair)
 {
-    [$x, $y] = $pair;
-    echo "<table border=1>";
-    echo "<tr><td>$x</td></tr>";
-    echo "<tr><td>$y</td></tr>";
-    echo "</table>";
+    echo strMatrix($pair);
 }
 function showMultiply($matrix_a, $pair_b)
 {
