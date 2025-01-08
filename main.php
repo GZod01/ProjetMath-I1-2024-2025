@@ -68,7 +68,7 @@ function rCharCodePair($pair){
     global $char_codes;
     $npair=[];
     for($i=0;$i<sizeof($pair);$i++){
-        $npair[$i]=$char_codes[mod27($pair[$i])];
+        $npair[$i]=$char_codes[$pair[$i]];
     }
     return $npair;
 }
