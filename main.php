@@ -39,18 +39,16 @@ function strMatrix($t){
     return $stroutput;
 }
 function matrixMul(array $mat,array $pair){
-    $retPair= [];
     if(sizeof($pair)!=sizeof($mat)){
         throw new Exception("Pair must have size of Mat");
     }
+    $res = array_fill(0, sizeof($pair), 0);
     for($i=0;$i<sizeof($pair);$i++){
-        $sum=0;
         for($j=0;$j<sizeof($pair);$j++){
-            $sum+=$mat[$i][$j]+$pair[$j];
+            $res[$i]=$mat[$i][$j]*$pair[$j];
         }
-        $retPair[$i]=$sum;
     }
-    return $retPair;
+    return $res;
 }
 function showPair($pair)
 {
@@ -340,7 +338,7 @@ ob_end_clean();
 <?=$echostr?>
 <form action="" method="get">
     <input type=text name="message" value="<?= htmlspecialchars($message ?? "") ?>">
-    <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous): 
+    <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous):
         <input type=number name="rows_amount" value="<?=htmlspecialchars($rows_amount)?>" required=true></label>
     <!-- <input type=text name="base" value="<?= htmlspecialchars($baseStr ?? "1,2,3,7") ?>" required=false optional> -->
     <div class=equationstart>
@@ -376,7 +374,7 @@ ob_end_clean();
         background-color: #f0f0f0;
     }
     .preoutput{
-        
+
         max-width: 80%;
         width:80%;
         border:2px solid black;
