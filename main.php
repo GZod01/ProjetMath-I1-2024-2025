@@ -17,6 +17,40 @@ $char_codes = [];
 foreach ($char_codes_list as $i => $cc) {
     $char_codes[$cc] = $i;
 }
+function modifierMatriceAvecPremiers($matrice)
+{
+    global $charlist;
+    $m = mb_strlen($charlist);
+
+    // Liste de nombres premiers (à ajuster selon vos besoins)
+    $nombresPremiers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79];
+
+    // Vérifier que m est premier avec tous les nombres premiers
+    foreach ($nombresPremiers as $premier) {
+        if (pgcd($m, $premier) != 1) {
+            return "Erreur : m doit être premier avec tous les nombres premiers.";
+        }
+    }
+
+    // Calculer les inverses modulo m
+    $inverses = [];
+    foreach ($nombresPremiers as $premier) {
+        $inverses[] = inverseModulaire($premier, $m);
+    }
+
+    // Modifier la matrice
+    $n = count($matrice);
+    for ($i = 0; $i < $n; $i++) {
+        for ($j = 0; $j < $n; $j++) {
+            // Remplacer chaque élément par un inverse modulo m
+            $matrice[$i][$j] = $inverses[($i * $n + $j) % count($inverses)];
+        }
+    }
+
+    return $matrice;
+}
+
+
 function showMatrix($matrix)
 {
     echo strMatrix($matrix);
@@ -41,7 +75,7 @@ function strMatrix($t)
 function matrixMul(array $mat, array $pair)
 {
     if (sizeof($pair) != sizeof($mat)) {
-        trigger_error("Pair must have size of Mat",E_USER_ERROR);
+        trigger_error("Pair must have size of Mat", E_USER_ERROR);
     }
     $res = array_fill(0, sizeof($pair), 0);
     for ($i = 0; $i < sizeof($pair); $i++) {
@@ -216,7 +250,7 @@ function matInv($base, $n)
     global $charlist;
     // Vérifier si la matrice est carrée
     if (count($base) != $n || count($base[0]) != $n) {
-        trigger_error("Erreur : La matrice doit être carrée.",E_USER_ERROR);
+        trigger_error("Erreur : La matrice doit être carrée.", E_USER_ERROR);
         return;
     }
 
@@ -234,7 +268,7 @@ function matInv($base, $n)
 
         // Vérifier si l'inverse modulaire existe
         if ($invDet === null) {
-            trigger_error("Erreur : La matrice n'est pas inversible.",E_USER_ERROR);
+            trigger_error("Erreur : La matrice n'est pas inversible.", E_USER_ERROR);
             return;
         }
 
@@ -275,7 +309,7 @@ function matInv($base, $n)
                     }
                 }
                 if ($pivot == 0) {
-                    trigger_error("Erreur : La matrice n'est pas inversible.",E_USER_ERROR);
+                    trigger_error("Erreur : La matrice n'est pas inversible.", E_USER_ERROR);
                     return;
                 }
             }
@@ -310,7 +344,7 @@ function matInv($base, $n)
 
         // Vérifier si l'inverse modulaire existe
         if ($invDet === null) {
-            trigger_error("Erreur : La matrice n'est pas inversible.",E_USER_ERROR);
+            trigger_error("Erreur : La matrice n'est pas inversible.", E_USER_ERROR);
             return;
         }
 
@@ -352,15 +386,22 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
         $baseArr = [1, 2, 3, 7];
         $rows_amount = 2;
     }
-    if (inverseModulaire(calculDet($base, $rows_amount), mb_strlen($charlist)) === null) {
-        echo "mat not inversible";
-        $baseArr = [1, 2, 3, 7];
-        $rows_amount = 2;
-    }
+    // if (inverseModulaire(calculDet($base, $rows_amount), mb_strlen($charlist)) === null) {
+    //     echo "mat not inversible";
+    //     $baseArr = [1, 2, 3, 7];
+    //     $rows_amount = 2;
+    // }
     $baseStr = implode(",", $baseArr);
 
     $base = arrToMatrix($baseArr, $rows_amount);
     $baseInv = matInv($base, $rows_amount);
+    if($baseInv === null){
+        echo "mat not inversible";
+        $baseArr = [1, 2, 3, 7];
+        $rows_amount = 2;
+        $base = arrToMatrix($baseArr, $rows_amount);
+        $baseInv = matInv($base, $rows_amount);
+    }
     $message = $_REQUEST["message"];
     $n_message = "";
     foreach (mb_str_split($message) as $char) {
