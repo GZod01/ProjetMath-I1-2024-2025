@@ -169,23 +169,17 @@ function castIntArray($arr){
     }
     return $narr;
 }
-// calcul det of square matrix of size n x n with n variable
+
 function calculDet($mat) {
     $n = count($mat);
-
-    // Cas de base : matrice 1x1
     if ($n == 1) {
         return $mat[0][0];
     }
-
-    // Cas de base : matrice 2x2
     if ($n == 2) {
         return $mat[0][0] * $mat[1][1] - $mat[0][1] * $mat[1][0];
     }
-
     $det = 0;
     for ($i = 0; $i < $n; $i++) {
-        // Calculer la sous-matrice en supprimant la première ligne et la colonne i
         $subMat = [];
         for ($j = 1; $j < $n; $j++) {
             $row = [];
@@ -196,8 +190,6 @@ function calculDet($mat) {
             }
             $subMat[] = $row;
         }
-
-        // Calculer le déterminant de la sous-matrice et l'ajouter à la somme
         $det += $mat[0][$i] * pow(-1, $i) * calculDet($subMat);
     }
 
@@ -215,16 +207,70 @@ function arrToMatrix($baseArr,$n){
     }
     return $base;
 }
-function matInv($base){
-    $n=sizeof($base);
-    $det=calculDet($base,$n);
-    $inv=[];
-    for($i=0;$i<$n;$i++){
-        for($j=0;$j<$n;$j++){
-            $inv[$i][$j]=pow(-1,$i+$j)*calculDet(minor($base,$i,$j),$n-1)/$det;
-        }
+function matInv($base,$n){
+    if (count($base) != $n || count($base[0]) != $n) {
+        return "Erreur : La matrice doit être carrée.";
     }
-    return $inv;
+    if ($n == 2) {
+        $a = $base[0][0];
+        $b = $base[0][1];
+        $c = $base[1][0];
+        $d = $base[1][1];
+        $determinant = ($a * $d) - ($b * $c);
+        if ($determinant == 0) {
+            return "Erreur : La matrice n'est pas inversible.";
+        }
+        return [
+            [($d / $determinant), (-$b / $determinant)],
+            [(-$c / $determinant), ($a / $determinant)]
+        ];
+    }
+    else {
+        $identite = [];
+        for ($i = 0; $i < $n; $i++) {
+            $identite[$i] = [];
+            for ($j = 0; $j < $n; $j++) {
+                $identite[$i][$j] = ($i == $j) ? 1 : 0;
+            }
+        }
+        $augmentee = [];
+        for ($i = 0; $i < $n; $i++) {
+            $augmentee[$i] = array_merge($base[$i], $identite[$i]);
+        }
+        for ($i = 0; $i < $n; $i++) {
+            $pivot = $augmentee[$i][$i];
+            if ($pivot == 0) {
+                for ($k = $i + 1; $k < $n; $k++) {
+                    if ($augmentee[$k][$i] != 0) {
+                        $temp = $augmentee[$i];
+                        $augmentee[$i] = $augmentee[$k];
+                        $augmentee[$k] = $temp;
+                        $pivot = $augmentee[$i][$i];
+                        break;
+                    }
+                }
+                if ($pivot == 0) {
+                    return "Erreur : La matrice n'est pas inversible.";
+                }
+            }
+            for ($j = 0; $j < 2 * $n; $j++) {
+                $augmentee[$i][$j] /= $pivot;
+            }
+            for ($k = 0; $k < $n; $k++) {
+                if ($k != $i) {
+                    $facteur = $augmentee[$k][$i];
+                    for ($j = 0; $j < 2 * $n; $j++) {
+                        $augmentee[$k][$j] -= $facteur * $augmentee[$i][$j];
+                    }
+                }
+            }
+        }
+        $inverse = [];
+        for ($i = 0; $i < $n; $i++) {
+            $inverse[$i] = array_slice($augmentee[$i], $n);
+        }
+        return $inverse;
+    }
 }
 function minor($base,$i,$j){
     $n=sizeof($base);
@@ -252,7 +298,7 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
     $baseStr = implode(",", $baseArr);
 
     $base = arrToMatrix($baseArr,$rows_amount);
-    $baseInv = matInv($base);
+    $baseInv = matInv($base,$rows_amount);
     $message = $_REQUEST["message"];
     $n_message = "";
     foreach (mb_str_split($message) as $char) {
