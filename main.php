@@ -432,22 +432,22 @@ ob_end_clean();
     <div class=superLine>
         <?= $echostr ?>
         <form action="" method="get">
-            <input type=text name="message" value="<?= htmlspecialchars($message ?? "") ?>">
+            <input type=text name="message" id="message" value="<?= htmlspecialchars($message ?? "") ?>">
             <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous):
-                <input type=number name="rows_amount" value="<?= htmlspecialchars($rows_amount) ?>" required=true></label>
+                <input type=number name="rows_amount" id="rows_amount"  value="<?= htmlspecialchars($rows_amount) ?>" required=true></label>
             <div class=equationstart>
                 <table>
                     <?php for ($i = 0; $i < $rows_amount; $i++) { ?>
                         <tr>
                             <?php for ($j = 0; $j < $rows_amount; $j++) { ?>
-                                <td><input type=number name="base[]" value="<?= htmlspecialchars($base[$i][$j]) ?>" required=true></td>
+                                <td><input type=number name="base[]" id="base[]" value="<?= htmlspecialchars($base[$i][$j]) ?>" required=true></td>
                             <?php } ?>
                         </tr>
                     <?php } ?>
                 </table>
             </div>
-            <input type=submit name="action" value="encrypt">
-            <input type=submit name="action" value="decrypt">
+            <input type=submit name="action" id="action" value="encrypt">
+            <input type=submit name="action" id="action" value="decrypt">
         </form>
     </div>
     <details class=preoutput>
