@@ -440,7 +440,7 @@ ob_end_clean();
                     <?php for ($i = 0; $i < $rows_amount; $i++) { ?>
                         <tr>
                             <?php for ($j = 0; $j < $rows_amount; $j++) { ?>
-                                <td><input type=number name="base[]" id="base[]" value="<?= htmlspecialchars($base[$i][$j]) ?>" required=true></td>
+                                <td><input type=number name="base[]" id="base<?=strval($i).strval($j);?>" value="<?= htmlspecialchars($base[$i][$j]) ?>" required=true></td>
                             <?php } ?>
                         </tr>
                     <?php } ?>
