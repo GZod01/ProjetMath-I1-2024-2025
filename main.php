@@ -390,7 +390,7 @@ function matInv($base, $n)
                 $inverse[$i][$j] = mod27($inverse[$i][$j] * $invDet);
             }
         }
-
+        print_r($inverse);
         return $inverse;
     }
 }
