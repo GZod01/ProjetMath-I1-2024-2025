@@ -15,202 +15,202 @@ $char_codes = [];
 
 
 foreach ($char_codes_list as $i => $cc) {
-    $char_codes[$cc] = $i;
+$char_codes[$cc] = $i;
 }
 
 function showMatrix($matrix)
 {
-    echo strMatrix($matrix);
+echo strMatrix($matrix);
 }
 
 function strMatrix($t)
 {
-    $stroutput = "<table border=1>";
-    foreach ($t as $row) {
-        $stroutput .= "<tr>";
-        if (is_array($row)) {
-            foreach ($row as $cell) {
-                $stroutput .= "<td>$cell</td>";
-            }
-        } else {
-            $stroutput .= "<td>$row</td>";
+$stroutput = "<table border=1>";
+foreach ($t as $row) {
+    $stroutput .= "<tr>";
+    if (is_array($row)) {
+        foreach ($row as $cell) {
+            $stroutput .= "<td>$cell</td>";
         }
-        $stroutput .= "</tr>";
+    } else {
+        $stroutput .= "<td>$row</td>";
     }
-    $stroutput .= "</table>";
-    return $stroutput;
+    $stroutput .= "</tr>";
+}
+$stroutput .= "</table>";
+return $stroutput;
 }
 
 function matrixMul(array $mat, array $pair)
 {
-    if (sizeof($pair) != sizeof($mat)) {
-        trigger_error("Pair must have size of Mat", E_USER_ERROR);
+if (sizeof($pair) != sizeof($mat)) {
+    trigger_error("Pair must have size of Mat", E_USER_ERROR);
+}
+$res = array_fill(0, sizeof($pair), 0);
+for ($i = 0; $i < sizeof($pair); $i++) {
+    for ($j = 0; $j < sizeof($pair); $j++) {
+        $res[$i] += $mat[$i][$j] * $pair[$j];
     }
-    $res = array_fill(0, sizeof($pair), 0);
-    for ($i = 0; $i < sizeof($pair); $i++) {
-        for ($j = 0; $j < sizeof($pair); $j++) {
-            $res[$i] += $mat[$i][$j] * $pair[$j];
-        }
-    }
-    return $res;
+}
+return $res;
 }
 
 function showPair($pair)
 {
-    echo strMatrix($pair);
+echo strMatrix($pair);
 }
 
 function charCodePair($pair)
 {
-    global $char_codes_list;
-    $npair = [];
-    for ($i = 0; $i < sizeof($pair); $i++) {
-        $index = round(mod27($pair[$i])); // Arrondir l'index
-        $npair[$i] = $char_codes_list[$index];
-    }
-    return $npair;
+global $char_codes_list;
+$npair = [];
+for ($i = 0; $i < sizeof($pair); $i++) {
+    $index = round(mod27($pair[$i])); // Arrondir l'index
+    $npair[$i] = $char_codes_list[$index];
+}
+return $npair;
 }
 
 function rCharCodePair($pair)
 {
-    global $char_codes;
-    $npair = [];
-    for ($i = 0; $i < sizeof($pair); $i++) {
-        $char = $pair[$i];
-        if (isset($char_codes[$char])) {
-            $npair[$i] = round($char_codes[$char]); // Affecter directement la valeur numérique
-        } else {
-            $npair[$i] = 0; // Ou une autre valeur par défaut
-        }
+global $char_codes;
+$npair = [];
+for ($i = 0; $i < sizeof($pair); $i++) {
+    $char = $pair[$i];
+    if (isset($char_codes[$char])) {
+        $npair[$i] = round($char_codes[$char]); // Affecter directement la valeur numérique
+    } else {
+        $npair[$i] = 0; // Ou une autre valeur par défaut
     }
-    return $npair;
+}
+return $npair;
 }
 
 function showMultiply($matrix_a, $pair_b)
 {
-    global $char_codes_list;
-    showMatrix($matrix_a);
-    echo "*";
-    showPair(charCodePair($pair_b));
-    echo "=";
-    showMatrix($matrix_a);
-    echo "*";
-    showPair($pair_b);
-    echo "=";
-    $retPair = matrixMul($matrix_a, $pair_b);
-    showPair($retPair);
-    echo "=";
-    showPair(charCodePair($retPair));
+global $char_codes_list;
+showMatrix($matrix_a);
+echo "*";
+showPair(charCodePair($pair_b));
+echo "=";
+showMatrix($matrix_a);
+echo "*";
+showPair($pair_b);
+echo "=";
+$retPair = matrixMul($matrix_a, $pair_b);
+showPair($retPair);
+echo "=";
+showPair(charCodePair($retPair));
 }
 
 function multiply(array $matrix_a, array $pair_b)
 {
-    showMultiply($matrix_a, $pair_b);
-    return matrixMul($matrix_a, $pair_b);
+showMultiply($matrix_a, $pair_b);
+return matrixMul($matrix_a, $pair_b);
 }
 
 function mod27($a)
 {
-    global $charlist;
-    $mod_val = mb_strlen($charlist);
-    return fmod(($mod_val + fmod($a, $mod_val)), $mod_val); // Utiliser fmod() pour les nombres à virgule flottante
+global $charlist;
+$mod_val = mb_strlen($charlist);
+return fmod(($mod_val + fmod($a, $mod_val)), $mod_val); // Utiliser fmod() pour les nombres à virgule flottante
 }
 function mod27Mat($pair)
 {
-    $npair = [];
-    for ($i = 0; $i < sizeof($pair); $i++) {
-        $npair[$i] = mod27($pair[$i]);
-    }
-    return $npair;
+$npair = [];
+for ($i = 0; $i < sizeof($pair); $i++) {
+    $npair[$i] = mod27($pair[$i]);
+}
+return $npair;
 }
 
 function encrypt($message, $base, $rows_amount)
 {
-    global $char_codes, $char_codes_list;
-    $message_encrypted = "";
-    $ccpairslist = [];
-    echo "<div class=messagepairs>";
-    echo "message: $message ";
-    echo "in pairs = ";
-    foreach (mb_str_split($message, $rows_amount) as $char) {
-        echo "<div class=equationstart>";
-        $chars = mb_str_split($char);
-        $char_codes_pair = rCharCodePair($chars);
-        $ccpairslist[] = $char_codes_pair;
-        showPair($chars);
-        echo "=>";
-        showPair($char_codes_pair);
-        echo "</div>";
-    }
+global $char_codes, $char_codes_list;
+$message_encrypted = "";
+$ccpairslist = [];
+echo "<div class=messagepairs>";
+echo "message: $message ";
+echo "in pairs = ";
+foreach (mb_str_split($message, $rows_amount) as $char) {
+    echo "<div class=equationstart>";
+    $chars = mb_str_split($char);
+    $char_codes_pair = rCharCodePair($chars);
+    $ccpairslist[] = $char_codes_pair;
+    showPair($chars);
+    echo "=>";
+    showPair($char_codes_pair);
     echo "</div>";
-    foreach ($ccpairslist as $char_codes_pair) {
-        echo "<div class=equationstart>";
-        $char_codes_encrypted = multiply($base, $char_codes_pair);
-        $char_codes_encrypted = mod27Mat($char_codes_encrypted);
-        $message_encrypted .= implode("", charCodePair($char_codes_encrypted));
-        echo "</div>";
-    }
-    return $message_encrypted;
+}
+echo "</div>";
+foreach ($ccpairslist as $char_codes_pair) {
+    echo "<div class=equationstart>";
+    $char_codes_encrypted = multiply($base, $char_codes_pair);
+    $char_codes_encrypted = mod27Mat($char_codes_encrypted);
+    $message_encrypted .= implode("", charCodePair($char_codes_encrypted));
+    echo "</div>";
+}
+return $message_encrypted;
 }
 
 function decrypt($message, $decrypt_base, $rows_amount)
 {
-    return encrypt($message, $decrypt_base, $rows_amount);
+return encrypt($message, $decrypt_base, $rows_amount);
 }
 
 // Fonction pour calculer le PGCD (Plus Grand Commun Diviseur)
 function pgcd($a, $b)
 {
-    while ($b != 0) {
-        $temp = $a % $b;
-        $a = $b;
-        $b = $temp;
-    }
-    return $a;
+while ($b != 0) {
+    $temp = $a % $b;
+    $a = $b;
+    $b = $temp;
+}
+return $a;
 }
 
 // Fonction pour calculer l'inverse modulaire
 function inverseModulaire($a, $m)
 {
-    for ($x = 1; $x < $m; $x++) {
-        if (($a * $x) % $m == 1) {
-            return $x;
-        }
+for ($x = 1; $x < $m; $x++) {
+    if (($a * $x) % $m == 1) {
+        return $x;
     }
-    return null;
+}
+return null;
 }
 
 function modifierMatriceAvecPremiers($matrice)
 {
-    global $charlist;
-    $m = mb_strlen($charlist);
+global $charlist;
+$m = mb_strlen($charlist);
 
-    // Liste de nombres premiers (à ajuster selon vos besoins)
-    $nombresPremiers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79];
+// Liste de nombres premiers (à ajuster selon vos besoins)
+$nombresPremiers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79];
 
-    // Vérifier que m est premier avec tous les nombres premiers
-    foreach ($nombresPremiers as $premier) {
-        if (pgcd($m, $premier) != 1) {
-            return "Erreur : m doit être premier avec tous les nombres premiers.";
-        }
+// Vérifier que m est premier avec tous les nombres premiers
+foreach ($nombresPremiers as $premier) {
+    if (pgcd($m, $premier) != 1) {
+        return "Erreur : m doit être premier avec tous les nombres premiers.";
     }
+}
 
-    // Calculer les inverses modulo m
-    $inverses = [];
-    foreach ($nombresPremiers as $premier) {
-        $inverses[] = inverseModulaire($premier, $m);
+// Calculer les inverses modulo m
+$inverses = [];
+foreach ($nombresPremiers as $premier) {
+    $inverses[] = inverseModulaire($premier, $m);
+}
+
+// Modifier la matrice
+$n = count($matrice);
+for ($i = 0; $i < $n; $i++) {
+    for ($j = 0; $j < $n; $j++) {
+        // Remplacer chaque élément par un inverse modulo m
+        $matrice[$i][$j] = $inverses[($i * $n + $j) % count($inverses)];
     }
+}
 
-    // Modifier la matrice
-    $n = count($matrice);
-    for ($i = 0; $i < $n; $i++) {
-        for ($j = 0; $j < $n; $j++) {
-            // Remplacer chaque élément par un inverse modulo m
-            $matrice[$i][$j] = $inverses[($i * $n + $j) % count($inverses)];
-        }
-    }
-
-    return $matrice;
+return $matrice;
 }
 
 $base = [[1, 2], [3, 7]];
@@ -223,208 +223,203 @@ ob_start();
 $baseArr = [1, 2, 3, 7];
 
 if (isset($_REQUEST["rows_amount"])) {
-    $rows_amount = $_REQUEST["rows_amount"];
+$rows_amount = $_REQUEST["rows_amount"];
 }
 
 if (isset($_REQUEST["base"])) {
-    if (is_array($_REQUEST["base"])) {
-        $baseArr = castIntArray($_REQUEST["base"]);
-        $base = arrToMatrix($baseArr, $rows_amount);
-    } else {
-        $baseArr = castIntArray(str_contains(",", $_REQUEST["base"]) ? explode(",", $_REQUEST["base"]) : str_split($_REQUEST["base"]));
-    }
+if (is_array($_REQUEST["base"])) {
+    $baseArr = castIntArray($_REQUEST["base"]);
+    $base = arrToMatrix($baseArr, $rows_amount);
+} else {
+    $baseArr = castIntArray(str_contains(",", $_REQUEST["base"]) ? explode(",", $_REQUEST["base"]) : str_split($_REQUEST["base"]));
+}
 }
 
 function castIntArray($arr)
 {
-    $narr = [];
-    foreach ($arr as $a) {
-        $narr[] = (int)$a;
-    }
-    return $narr;
+$narr = [];
+foreach ($arr as $a) {
+    $narr[] = (int)$a;
+}
+return $narr;
 }
 
 function calculDet($mat)
 {
-    $n = count($mat);
-    if ($n == 1) {
-        return $mat[0][0];
-    }
-    if ($n == 2) {
-        return $mat[0][0] * $mat[1][1] - $mat[0][1] * $mat[1][0];
-    }
-    $det = 0;
-    for ($i = 0; $i < $n; $i++) {
-        $subMat = [];
-        for ($j = 1; $j < $n; $j++) {
-            $row = [];
-            for ($k = 0; $k < $n; $k++) {
-                if ($k != $i) {
-                    $row[] = $mat[$j][$k];
-                }
+$n = count($mat);
+if ($n == 1) {
+    return $mat[0][0];
+}
+if ($n == 2) {
+    return $mat[0][0] * $mat[1][1] - $mat[0][1] * $mat[1][0];
+}
+$det = 0;
+for ($i = 0; $i < $n; $i++) {
+    $subMat = [];
+    for ($j = 1; $j < $n; $j++) {
+        $row = [];
+        for ($k = 0; $k < $n; $k++) {
+            if ($k != $i) {
+                $row[] = $mat[$j][$k];
             }
-            $subMat[] = $row;
         }
-        $det += $mat[0][$i] * pow(-1, $i) * calculDet($subMat);
+        $subMat[] = $row;
     }
+    $det += $mat[0][$i] * pow(-1, $i) * calculDet($subMat);
+}
 
-    return $det;
+return $det;
 }
 
 function arrToMatrix($baseArr, $n)
 {
-    $base = [];
-    $k = 0;
-    for ($i = 0; $i < $n; $i++) {
-        for ($j = 0; $j < $n; $j++) {
-            $base[$i][$j] = $baseArr[$k];
-            $k++;
-        }
+$base = [];
+$k = 0;
+for ($i = 0; $i < $n; $i++) {
+    for ($j = 0; $j < $n; $j++) {
+        $base[$i][$j] = $baseArr[$k];
+        $k++;
     }
-    return $base;
 }
+return $base;
+}
+
 function matInv($base, $n)
 {
-    global $charlist;
-    // Vérifier si la matrice est carrée
-    if (count($base) != $n || count($base[0]) != $n) {
-        trigger_error("Erreur : La matrice doit être carrée.", E_USER_ERROR);
-        return;
-    }
-
-    // Cas de base : matrice 2x2
-    if ($n == 2) {
-        $a = $base[0][0];
-        $b = $base[0][1];
-        $c = $base[1][0];
-        $d = $base[1][1];
-
-        $determinant = ($a * $d) - ($b * $c);
-
-        // Calculer l'inverse modulaire du déterminant
-        $invDet = inverseModulaire($determinant, mb_strlen($charlist));
-
-        // Vérifier si l'inverse modulaire existe
-        if ($invDet === null) {
-            return null;
-        }
-
-        // Multiplier chaque élément de la matrice inverse par l'inverse modulaire
-        return [
-            [mod27($d * $invDet), mod27(-$b * $invDet)],
-            [mod27(-$c * $invDet), mod27($a * $invDet)]
-        ];
-    }
-    // Pour les matrices de taille n > 2, utiliser la méthode de Gauss-Jordan
-    else {
-        $identite = [];
-        for ($i = 0; $i < $n; $i++) {
-            $identite[$i] = [];
-            for ($j = 0; $j < $n; $j++) {
-                $identite[$i][$j] = ($i == $j) ? 1 : 0;
-            }
-        }
-
-        $augmentee = [];
-        for ($i = 0; $i < $n; $i++) {
-            $augmentee[$i] = array_merge($base[$i], $identite[$i]);
-        }
-
-        // Élimination de Gauss-Jordan
-        for ($i = 0; $i < $n; $i++) {
-            // Trouver le pivot
-            $pivot = $augmentee[$i][$i];
-            if ($pivot == 0) {
-                // Trouver une ligne avec un pivot non nul et échanger les lignes
-                for ($k = $i + 1; $k < $n; $k++) {
-                    if ($augmentee[$k][$i] != 0) {
-                        $temp = $augmentee[$i];
-                        $augmentee[$i] = $augmentee[$k];
-                        $augmentee[$k] = $temp;
-                        $pivot = $augmentee[$i][$i];
-                        break;
-                    }
-                }
-                if ($pivot == 0) {
-                    return null;
-                }
-            }
-
-            // Normaliser la ligne du pivot
-            $inversePivot = inverseModulaire($pivot, mb_strlen($charlist)); // Calculer l'inverse du pivot
-            for ($j = 0; $j < 2 * $n; $j++) {
-                $augmentee[$i][$j] = mod27($augmentee[$i][$j] * $inversePivot); // Multiplier par l'inverse du pivot
-            }
-
-            // Éliminer les autres éléments de la colonne du pivot
-            for ($k = 0; $k < $n; $k++) {
-                if ($k != $i) {
-                    $facteur = $augmentee[$k][$i];
-                    for ($j = 0; $j < 2 * $n; $j++) {
-                        $augmentee[$k][$j] = mod27($augmentee[$k][$j] - $facteur * $augmentee[$i][$j]);
-                    }
-                }
-            }
-        }
-
-        // Extraire l'inverse de la matrice augmentée
-        $inverse = [];
-        for ($i = 0; $i < $n; $i++) {
-            $inverse[$i] = array_slice($augmentee[$i], $n);
-        }
-
-        // Calculer le déterminant de la matrice originale
-        $determinant = calculDet($base, $n);
-
-        // Calculer l'inverse modulaire du déterminant
-        $invDet = inverseModulaire($determinant, mb_strlen($charlist));
-
-        // Vérifier si l'inverse modulaire existe
-        if ($invDet === null) {
-            return null;
-        }
-
-        // Multiplier chaque élément de la matrice inverse par l'inverse modulaire
-        for ($i = 0; $i < $n; $i++) {
-            for ($j = 0; $j < $n; $j++) {
-                $inverse[$i][$j] = mod27($inverse[$i][$j] * $invDet);
-            }
-        }
-        print_r($inverse);
-        return $inverse;
-    }
+global $charlist;
+if (count($base) != $n || count($base[0]) != $n) {
+    trigger_error("Erreur : La matrice doit être carrée.", E_USER_ERROR);
+    return;
 }
+
+if ($n == 2) {
+    $a = $base[0][0];
+    $b = $base[0][1];
+    $c = $base[1][0];
+    $d = $base[1][1];
+
+    $determinant = ($a * $d) - ($b * $c);
+    $invDet = inverseModulaire($determinant, mb_strlen($charlist));
+
+    if ($invDet === null) {
+        //echo "Erreur : La matrice n'est pas inversible.<br>";
+        return null;
+    }
+
+    return [
+        [mod27($d * $invDet), mod27(-$b * $invDet)],
+        [mod27(-$c * $invDet), mod27($a * $invDet)]
+    ];
+} else {
+    $identite = [];
+    for ($i = 0; $i < $n; $i++) {
+        $identite[$i] = [];
+        for ($j = 0; $j < $n; $j++) {
+            $identite[$i][$j] = ($i == $j) ? 1 : 0;
+        }
+    }
+
+    $augmentee = [];
+    for ($i = 0; $i < $n; $i++) {
+        $augmentee[$i] = array_merge($base[$i], $identite[$i]);
+    }
+
+    for ($i = 0; $i < $n; $i++) {
+        $pivot = $augmentee[$i][$i];
+        if ($pivot == 0) {
+            for ($k = $i + 1; $k < $n; $k++) {
+                if ($augmentee[$k][$i] != 0) {
+                    $temp = $augmentee[$i];
+                    $augmentee[$i] = $augmentee[$k];
+                    $augmentee[$k] = $temp;
+                    $pivot = $augmentee[$i][$i];
+                    break;
+                }
+            }
+            if ($pivot == 0) {
+                //trigger_error("Erreur : La matrice n'est pas inversible.",E_USER_ERROR);
+                return null;
+            }
+        }
+
+        // Normaliser la ligne du pivot
+        $inversePivot = inverseModulaire($pivot, mb_strlen($charlist)); // Calculer l'inverse du pivot
+        for ($j = 0; $j < 2 * $n; $j++) {
+            $augmentee[$i][$j] = mod27($augmentee[$i][$j] * $inversePivot); // Multiplier par l'inverse du pivot
+        }
+
+        // Éliminer les autres éléments de la colonne du pivot
+        for ($k = 0; $k < $n; $k++) {
+            if ($k != $i) {
+                $facteur = $augmentee[$k][$i];
+                for ($j = 0; $j < 2 * $n; $j++) {
+                    $augmentee[$k][$j] = mod27($augmentee[$k][$j] - $facteur * $augmentee[$i][$j]);
+                }
+            }
+        }
+    }
+
+    $inverse = [];
+    for ($i = 0; $i < $n; $i++) {
+        $inverse[$i] = array_slice($augmentee[$i], $n);
+    }
+
+    $determinant = calculDet($base, $n);
+    $invDet = inverseModulaire($determinant, mb_strlen($charlist));
+
+    if ($invDet === null) {
+        //trigger_error("Erreur : La matrice n'est pas inversible.",E_USER_ERROR);
+        return null;
+    }
+
+    for ($i = 0; $i < $n; $i++) {
+        for ($j = 0; $j < $n; $j++) {
+            $inverse[$i][$j] = mod27($inverse[$i][$j] * $invDet);
+        }
+    }
+
+    return $inverse;
+}
+}
+
 function minor($base, $i, $j)
 {
-    $n = sizeof($base);
-    $minor = [];
-    for ($ii = 0; $ii < $n; $ii++) {
-        for ($jj = 0; $jj < $n; $jj++) {
-            if ($ii != $i and $jj != $j) {
-                $minor[$ii - ($ii > $i)][$jj - ($jj > $j)] = $base[$ii][$jj];
-            }
+$n = sizeof($base);
+$minor = [];
+for ($ii = 0; $ii < $n; $ii++) {
+    for ($jj = 0; $jj < $n; $jj++) {
+        if ($ii != $i and $jj != $j) {
+            $minor[$ii - ($ii > $i)][$jj - ($jj > $j)] = $base[$ii][$jj];
         }
     }
-    return $minor;
+}
+return $minor;
 }
 
 if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
-    if (sizeof($baseArr) < $rows_amount) {
-        echo "bad base, must have rows_amount rows<br>\n";
-        $baseArr = [1, 2, 3, 7];
-        $rows_amount = 2;
-    }
+if (sizeof($baseArr) < $rows_amount) {
+    echo "bad base, must have rows_amount rows<br>\n";
+    $baseArr = [1, 2, 3, 7];
+    $rows_amount = 2;
+}
 
-    $baseStr = implode(",", $baseArr);
-    $base = arrToMatrix($baseArr, $rows_amount);
+$baseStr = implode(",", $baseArr);
+$base = arrToMatrix($baseArr, $rows_amount);
 
-    // Modification de la matrice avec des nombres premiers si elle n'est pas inversible
-    if (calculDet($base, $rows_amount) == 0) {
-        echo "La matrice n'est pas inversible. Modification avec des nombres premiers...<br>";
-        $base = modifierMatriceAvecPremiers($base);
-    }
+// Modification de la matrice avec des nombres premiers si elle n'est pas inversible
+if (calculDet($base, $rows_amount) == 0) {
+    echo "La matrice n'est pas inversible. Modification avec des nombres premiers...<br>";
+    $base = modifierMatriceAvecPremiers($base);
+}
 
-    $baseInv = matInv($base, $rows_amount);
+$baseInv = matInv($base, $rows_amount);
+
+// Vérifier si la matrice est inversible
+if ($baseInv === null) {
+    echo "Erreur : La matrice n'est pas inversible. Veuillez choisir une autre matrice.<br>";
+    // Afficher un message d'erreur ou effectuer une autre action
+} else {
+    // Continuer le processus d'encryptage/décryptage
     $message = $_REQUEST["message"];
     $n_message = "";
 
@@ -460,6 +455,7 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
     $echostr .= "</fieldset>";
     $echostr .= "</div>";
     echo "</div>";
+}
 }
 
 $preoutput = ob_get_clean();
