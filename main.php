@@ -434,13 +434,13 @@ ob_end_clean();
         <form action="" class=form method="get">
             <input type=text name="message" id="message" value="<?= htmlspecialchars($message ?? "") ?>">
             <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous):
-                <input type=number name="rows_amount" id="rows_amount"  value="<?= htmlspecialchars($rows_amount) ?>" required=true></label>
+                <input type=number name="rows_amount" id="rows_amount" value="<?= htmlspecialchars($rows_amount) ?>" required=true></label>
             <div class=equationstart>
                 <table>
                     <?php for ($i = 0; $i < $rows_amount; $i++) { ?>
                         <tr>
                             <?php for ($j = 0; $j < $rows_amount; $j++) { ?>
-                                <td><input type=number name="base[]" id="base<?=strval($i).strval($j);?>" value="<?= htmlspecialchars($base[$i][$j]) ?>" required=true></td>
+                                <td><input type=number name="base[]" id="base<?= strval($i) . strval($j); ?>" value="<?= htmlspecialchars($base[$i][$j]) ?>" required=true></td>
                             <?php } ?>
                         </tr>
                     <?php } ?>
@@ -467,10 +467,12 @@ ob_end_clean();
             padding: 0px;
             background-color: #f0f0f0;
         }
-        .form{
-            max-width: 80vw;
-            overflow-x:auto;
+
+        .form .equationstart {
+            max-width: 60vw;
+            overflow: auto;
         }
+
         .preoutput {
             max-width: 80%;
             width: 80%;
@@ -541,6 +543,11 @@ ob_end_clean();
             .lineBases {
                 display: flex;
                 flex-direction: row;
+            }
+
+            .equationstart {
+                max-width: 30vw;
+                overflow: auto;
             }
         }
     </style>
