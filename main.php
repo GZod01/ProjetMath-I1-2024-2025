@@ -431,7 +431,7 @@ ob_end_clean();
 <body>
     <div class=superLine>
         <?= $echostr ?>
-        <form action="" method="get">
+        <form action="" class=form method="get">
             <input type=text name="message" id="message" value="<?= htmlspecialchars($message ?? "") ?>">
             <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous):
                 <input type=number name="rows_amount" id="rows_amount"  value="<?= htmlspecialchars($rows_amount) ?>" required=true></label>
@@ -467,7 +467,10 @@ ob_end_clean();
             padding: 0px;
             background-color: #f0f0f0;
         }
-
+        .form{
+            max-width: 80vw;
+            overflow-x:auto;
+        }
         .preoutput {
             max-width: 80%;
             width: 80%;
