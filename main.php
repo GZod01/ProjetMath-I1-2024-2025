@@ -542,3 +542,4 @@ ob_end_clean();
         }
     </style>
 </body>
+<p>Made with ❤️ by <a href="https://gzod01.fr">GZod01</a>, helped by <a href="https://gemini.google.com">Google Gemini</a> and <a href="https://github.com/copilot">GitHub Copilot</a></p>
