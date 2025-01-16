@@ -286,114 +286,75 @@ function arrToMatrix($baseArr, $n)
 function matInv($base, $n)
 {
     global $charlist;
+    $m = mb_strlen($charlist);
+
     // Vérifier si la matrice est carrée
     if (count($base) != $n || count($base[0]) != $n) {
         trigger_error("Erreur : La matrice doit être carrée.", E_USER_ERROR);
-        return;
+        return null;
     }
 
-    // Cas de base : matrice 2x2
-    if ($n == 2) {
-        $a = $base[0][0];
-        $b = $base[0][1];
-        $c = $base[1][0];
-        $d = $base[1][1];
-
-        $determinant = ($a * $d) - ($b * $c);
-
-        // Calculer l'inverse modulaire du déterminant
-        $invDet = inverseModulaire($determinant, mb_strlen($charlist));
-
-        // Vérifier si l'inverse modulaire existe
-        if ($invDet === null) {
-            return null;
+    // Créer une matrice identité de même taille
+    $identite = [];
+    for ($i = 0; $i < $n; $i++) {
+        $identite[$i] = [];
+        for ($j = 0; $j < $n; $j++) {
+            $identite[$i][$j] = ($i == $j) ? 1 : 0;
         }
-
-        // Multiplier chaque élément de la matrice inverse par l'inverse modulaire
-        return [
-            [mod27($d * $invDet), mod27(-$b * $invDet)],
-            [mod27(-$c * $invDet), mod27($a * $invDet)]
-        ];
     }
-    // Pour les matrices de taille n > 2, utiliser la méthode de Gauss-Jordan
-    else {
-        $identite = [];
-        for ($i = 0; $i < $n; $i++) {
-            $identite[$i] = [];
-            for ($j = 0; $j < $n; $j++) {
-                $identite[$i][$j] = ($i == $j) ? 1 : 0;
+
+    // Créer une matrice augmentée en combinant la matrice de base et la matrice identité
+    $augmentee = [];
+    for ($i = 0; $i < $n; $i++) {
+        $augmentee[$i] = array_merge($base[$i], $identite[$i]);
+    }
+
+    // Élimination de Gauss-Jordan
+    for ($i = 0; $i < $n; $i++) {
+        // Trouver le pivot
+        $pivot = $augmentee[$i][$i];
+
+        // Si le pivot est nul, chercher une ligne en dessous avec un pivot non nul et échanger les lignes
+        if ($pivot == 0) {
+            for ($k = $i + 1; $k < $n; $k++) {
+                if ($augmentee[$k][$i] != 0) {
+                    $temp = $augmentee[$i];
+                    $augmentee[$i] = $augmentee[$k];
+                    $augmentee[$k] = $temp;
+                    $pivot = $augmentee[$i][$i];
+                    break;
+                }
             }
-        }
-
-        $augmentee = [];
-        for ($i = 0; $i < $n; $i++) {
-            $augmentee[$i] = array_merge($base[$i], $identite[$i]);
-        }
-
-        // Élimination de Gauss-Jordan
-        for ($i = 0; $i < $n; $i++) {
-            // Trouver le pivot
-            $pivot = $augmentee[$i][$i];
+            // Si aucun pivot non nul n'est trouvé, la matrice n'est pas inversible
             if ($pivot == 0) {
-                // Trouver une ligne avec un pivot non nul et échanger les lignes
-                for ($k = $i + 1; $k < $n; $k++) {
-                    if ($augmentee[$k][$i] != 0) {
-                        $temp = $augmentee[$i];
-                        $augmentee[$i] = $augmentee[$k];
-                        $augmentee[$k] = $temp;
-                        $pivot = $augmentee[$i][$i];
-                        break;
-                    }
-                }
-                // Si aucun pivot non nul n'est trouvé, la matrice n'est pas inversible
-                if ($pivot == 0) {
-                    return null;
-                }
+                return null;
             }
+        }
 
-            // Normaliser la ligne du pivot
-            $inversePivot = inverseModulaire($pivot, mb_strlen($charlist)); // Calculer l'inverse du pivot
-            for ($j = 0; $j < 2 * $n; $j++) {
-                $augmentee[$i][$j] = mod27($augmentee[$i][$j] * $inversePivot); // Multiplier par l'inverse du pivot
-            }
+        // Normaliser la ligne du pivot (multiplier par l'inverse modulaire du pivot)
+        $invPivot = inverseModulaire($pivot, $m);
+        for ($j = 0; $j < 2 * $n; $j++) {
+            $augmentee[$i][$j] = mod27($augmentee[$i][$j] * $invPivot);
+        }
 
-            // Éliminer les autres éléments de la colonne du pivot
-            for ($k = 0; $k < $n; $k++) {
-                if ($k != $i) {
-                    $facteur = $augmentee[$k][$i];
-                    for ($j = 0; $j < 2 * $n; $j++) {
-                        $augmentee[$k][$j] = mod27($augmentee[$k][$j] - $facteur * $augmentee[$i][$j]);
-                    }
+        // Éliminer les autres éléments de la colonne du pivot
+        for ($k = 0; $k < $n; $k++) {
+            if ($k != $i) {
+                $facteur = $augmentee[$k][$i];
+                for ($j = 0; $j < 2 * $n; $j++) {
+                    $augmentee[$k][$j] = mod27($augmentee[$k][$j] - $facteur * $augmentee[$i][$j]);
                 }
             }
         }
-
-        // Extraire l'inverse de la matrice augmentée
-        $inverse = [];
-        for ($i = 0; $i < $n; $i++) {
-            $inverse[$i] = array_slice($augmentee[$i], $n);
-        }
-
-        // Calculer le déterminant de la matrice originale
-        $determinant = calculDet($base, $n);
-
-        // Calculer l'inverse modulaire du déterminant
-        $invDet = inverseModulaire($determinant, mb_strlen($charlist));
-
-        // Vérifier si l'inverse modulaire existe
-        if ($invDet === null) {
-            return null;
-        }
-
-        // Multiplier chaque élément de la matrice inverse par l'inverse modulaire
-        for ($i = 0; $i < $n; $i++) {
-            for ($j = 0; $j < $n; $j++) {
-                $inverse[$i][$j] = mod27($inverse[$i][$j] * $invDet);
-            }
-        }
-        print_r($inverse);
-        return $inverse;
     }
+
+    // Extraire la matrice inverse de la matrice augmentée
+    $inverse = [];
+    for ($i = 0; $i < $n; $i++) {
+        $inverse[$i] = array_slice($augmentee[$i], $n);
+    }
+
+    return $inverse;
 }
 function minor($base, $i, $j)
 {
