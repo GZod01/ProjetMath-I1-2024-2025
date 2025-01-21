@@ -473,7 +473,7 @@ ob_end_clean();
 
         .superLine {
             display: flex;
-            flex-direction: row;
+            flex-direction: <?=$rows_amount<=5?"row":"column"?>;
         }
 
         form {
