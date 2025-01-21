@@ -588,7 +588,7 @@ ob_end_clean();
         }
         #alerttextcopied.visible{
             display:block;
-            animation:progDisappear 3s;
+            animation:progDisappear 3s ease 1;
         }
         @keyframes progDisappear{
             0%{
@@ -597,7 +597,7 @@ ob_end_clean();
             }
             80%{
                 opacity:1;
-                height:
+                height:calc(20px + 2em);
             }
             99%{
                 oppacity:0;
