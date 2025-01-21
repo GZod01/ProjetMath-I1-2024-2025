@@ -410,8 +410,8 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
         $echostr .= htmlspecialchars(encrypt($message, $base, $rows_amount));
     }
     $echostr.="</span>";
-    $echostr.="<p>Cliquez sur le résultat pour copier dans le presse-papier</p>";
     $echostr .= "</fieldset>";
+    $echostr.="<p>Cliquez sur le résultat pour copier dans le presse-papier</p>";
     $echostr .= "</div>";
     echo "</div>";
 }
