@@ -290,7 +290,7 @@ function arrToMatrix($baseArr, $n)
     $k = 0;
     for ($i = 0; $i < $n; $i++) {
         for ($j = 0; $j < $n; $j++) {
-            $base[$i][$j] = $baseArr[$k];
+            $base[$i][$j] = $baseArr[$k]??0;
             $k++;
         }
     }
