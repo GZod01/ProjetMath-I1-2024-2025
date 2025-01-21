@@ -402,12 +402,14 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
     $echostr .= "<fieldset class=base><legend>Reverse Base:</legend><div class=equationstart>" . strMatrix($baseInv) . "</div></fieldset></div>";
     $echostr .= "<fieldset class=encrypted>";
     $echostr .= "<legend>Result message</legend>";
+    $echostr .= "<span id=superresulttocopy onclick=\"navigator.clipboard.writeText(this.innerText)\">";
 
     if ($action == "decrypt") {
-        $echostr .= decrypt($message, $baseInv, $rows_amount);
+        $echostr .= htmlspecialchars(decrypt($message, $baseInv, $rows_amount));
     } else {
-        $echostr .= encrypt($message, $base, $rows_amount);
+        $echostr .= htmlspecialchars(encrypt($message, $base, $rows_amount));
     }
+    $echostr.="</span>";
     $echostr .= "</fieldset>";
     $echostr .= "</div>";
     echo "</div>";
