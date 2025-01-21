@@ -454,6 +454,7 @@ ob_end_clean();
             <label for=generate_matrix>Génerer une matrice avec des nombres premiers: <input type=checkbox name="generate_matrix" id="generate_matrix"></label>
             <input type=submit name="action" id="action" value="encrypt">
             <input type=submit name="action" id="action" value="decrypt">
+            <a href="?">Réinitialiser le formulaire</a>
         </form>
     </div>
     <details class=preoutput>
