@@ -576,6 +576,7 @@ ob_end_clean();
             font-family: 'Courier New', Courier, monospace;
         }
         #alerttextcopied{
+            height:calc(20px + 2em);
             display:none;
             background:lime;
             color:white;
@@ -592,12 +593,15 @@ ob_end_clean();
         @keyframes progDisappear{
             0%{
                 opacity:1;
+                height:calc(20px + 2em);
             }
             80%{
                 opacity:1;
+                height:
             }
             99%{
                 oppacity:0;
+                height:0;
             }
             100%{
                 display:none;
