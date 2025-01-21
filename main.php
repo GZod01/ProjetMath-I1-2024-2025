@@ -24,7 +24,8 @@ function showMatrix($matrix)
     echo strMatrix($matrix);
 }
 
-function strToOkHTML($str){
+function strToOkHTML($str)
+{
     $nstr = htmlspecialchars($str);
     $nstr = str_replace(" ", "&#9633;", $nstr);
     return $nstr;
@@ -251,7 +252,7 @@ if (isset($_REQUEST["base"])) {
         $baseArr = castIntArray(str_contains(",", $_REQUEST["base"]) ? explode(",", $_REQUEST["base"]) : str_split($_REQUEST["base"]));
     }
 }
-if(isset($_REQUEST["generate_matrix"]) and $_REQUEST["generate_matrix"]=="on"){
+if (isset($_REQUEST["generate_matrix"]) and $_REQUEST["generate_matrix"] == "on") {
     $base = modifierMatriceAvecPremiers($base);
 }
 // pour un array avec uniquement des entiers
@@ -300,7 +301,7 @@ function arrToMatrix($baseArr, $n)
     $k = 0;
     for ($i = 0; $i < $n; $i++) {
         for ($j = 0; $j < $n; $j++) {
-            $base[$i][$j] = $baseArr[$k]??0;
+            $base[$i][$j] = $baseArr[$k] ?? 0;
             $k++;
         }
     }
@@ -412,9 +413,9 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
     } else {
         $echostr .= htmlspecialchars(encrypt($message, $base, $rows_amount));
     }
-    $echostr.="</span>";
+    $echostr .= "</span>";
     $echostr .= "</fieldset>";
-    $echostr.="<p>Cliquez sur le résultat pour copier dans le presse-papier</p>";
+    $echostr .= "<p>Cliquez sur le résultat pour copier dans le presse-papier</p>";
     $echostr .= "</div>";
     echo "</div>";
 }
@@ -425,78 +426,97 @@ ob_end_clean();
 
 <body>
     <script>
-        function copyClipBoard(el){
+        function copyClipBoard(el) {
             navigator.clipboard.writeText(el.innerText);
-            document.querySelector("#alerttextcopied").className="";
-            document.querySelector('#alerttextcopied').className="visible";
-            setTimeout(()=>{
-                document.querySelector("#alerttextcopied").className="";
-            },3000);
+            document.querySelector("#alerttextcopied").className = "";
+            document.querySelector('#alerttextcopied').className = "visible";
+            setTimeout(() => {
+                document.querySelector("#alerttextcopied").className = "";
+            }, 3000);
         }
     </script>
-    <div class=superLine>
-        <?= $echostr ?>
-        <form action="" class=form method="get">
-            <input type=text name="message" id="message" value="<?= htmlspecialchars($message ?? "") ?>">
-            <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous):
-                <input type=number name="rows_amount" id="rows_amount" value="<?= htmlspecialchars($rows_amount) ?>" required=true></label>
-            <div class=equationstart>
-                <table>
-                    <?php for ($i = 0; $i < $rows_amount; $i++) { ?>
-                        <tr>
-                            <?php for ($j = 0; $j < $rows_amount; $j++) { ?>
-                                <td><input type=number name="base[]" id="base<?= strval($i) . strval($j); ?>" value="<?= htmlspecialchars($base[$i][$j]) ?>"></td>
-                            <?php } ?>
-                        </tr>
-                    <?php } ?>
-                </table>
-            </div>
-            <label for=generate_matrix>Génerer une matrice avec des nombres premiers: <input type=checkbox name="generate_matrix" id="generate_matrix"></label>
-            <input type=submit name="action" id="action" value="encrypt">
-            <input type=submit name="action" id="action" value="decrypt">
-            <a href="?">Réinitialiser le formulaire</a>
-        </form>
-    </div>
-    <details class=preoutput>
-        <summary>show debug</summary>
-        <?= $preoutput ?>
-    </details>
-    <button onclick="document.querySelector(':root').className='';">Thème Clair (experimental)</button>
-    <button onclick="document.querySelector(':root').className='matrix';">Thème Sombre (experimental)</button>
-    <button onclick="navigator.share({title:'SuperEncrypt',text:'SuperEncrypt tool made by GZod01',url:window.location.href});">Partager l'outil</button>
-    <p class=copyright>Copyright &copy; 2024 <strong><a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</strong></p>
-    <p class=copyright>Fait dans le cadre du projet mathématique en I1 à UniLaSalle Amiens dans l'année 2024-2025</p>
+    <main>
+        <div class=superLine>
+            <?= $echostr ?>
+            <form action="" class=form method="get">
+                <input type=text name="message" id="message" value="<?= htmlspecialchars($message ?? "") ?>">
+                <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous):
+                    <input type=number name="rows_amount" id="rows_amount" value="<?= htmlspecialchars($rows_amount) ?>" required=true></label>
+                <div class=equationstart>
+                    <table>
+                        <?php for ($i = 0; $i < $rows_amount; $i++) { ?>
+                            <tr>
+                                <?php for ($j = 0; $j < $rows_amount; $j++) { ?>
+                                    <td><input type=number name="base[]" id="base<?= strval($i) . strval($j); ?>" value="<?= htmlspecialchars($base[$i][$j]) ?>"></td>
+                                <?php } ?>
+                            </tr>
+                        <?php } ?>
+                    </table>
+                </div>
+                <label for=generate_matrix>Génerer une matrice avec des nombres premiers: <input type=checkbox name="generate_matrix" id="generate_matrix"></label>
+                <input type=submit name="action" id="action" value="encrypt">
+                <input type=submit name="action" id="action" value="decrypt">
+                <a href="?">Réinitialiser le formulaire</a>
+            </form>
+        </div>
+        <details class=preoutput>
+            <summary>show debug</summary>
+            <?= $preoutput ?>
+        </details>
+    </main>
+    <footer>
+        <button onclick="document.querySelector(':root').className='';">Thème Clair (experimental)</button>
+        <button onclick="document.querySelector(':root').className='matrix';">Thème Sombre (experimental)</button>
+        <button onclick="navigator.share({title:'SuperEncrypt',text:'SuperEncrypt tool made by GZod01',url:window.location.href});">Partager l'outil</button>
+        <p class=copyright>Copyright &copy; 2024 <strong><a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</strong></p>
+        <p class=copyright>Fait dans le cadre du projet mathématique en I1 à UniLaSalle Amiens dans l'année 2024-2025</p>
+    </footer>
     <style>
-        :root{
-            --bgcolor : #f0f0f0;
+        :root {
+            --bgcolor: #f0f0f0;
             --bgdarken: #e0e0e0;
-            --color:black;
+            --color: black;
             transition: all .5s ease;
         }
-        :root.matrix{
-            --bgcolor:#101010;
-            --bgdarken:#303030;
-            --color:green;
-            transition:all .5s ease;
+
+        :root.matrix {
+            --bgcolor: #101010;
+            --bgdarken: #303030;
+            --color: green;
+            transition: all .5s ease;
         }
+
         body {
             color: var(--color);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             width: 100%;
             margin: 0px;
             padding: 0px;
-            background-color:var(--bgcolor);
+            background-color: var(--bgcolor);
         }
-        input{
-            background:var(--bgdarken);
-            color:var(--color);
+        main{
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 2 0;
         }
-        fieldset{
-            border-color:var(--color);
+        footer{
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input {
+            background: var(--bgdarken);
+            color: var(--color);
+        }
+
+        fieldset {
+            border-color: var(--color);
         }
 
         .form .equationstart {
@@ -523,7 +543,7 @@ ob_end_clean();
 
         .superLine {
             display: flex;
-            flex-direction: <?=$rows_amount<=5?"row":"column"?>;
+            flex-direction: <?= $rows_amount <= 5 ? "row" : "column" ?>;
         }
 
         form {
@@ -581,41 +601,48 @@ ob_end_clean();
                 overflow: auto;
             }
         }
-        .copyright{
+
+        .copyright {
             font-size: 0.7em;
             font-family: 'Courier New', Courier, monospace;
         }
-        #alerttextcopied{
-            --mysuperheight:30px;
-            height:var(--mysuperheight);
-            display:none;
-            background:lime;
-            color:white;
-            padding:10px;
-            border-radius:5px;
-            font-size:1.5em;
-            font-weight:bold;
-            text-align:center;
+
+        #alerttextcopied {
+            --mysuperheight: 30px;
+            height: var(--mysuperheight);
+            display: none;
+            background: lime;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
         }
-        #alerttextcopied.visible{
-            display:block;
-            animation:3s progDisappear;
+
+        #alerttextcopied.visible {
+            display: block;
+            animation: 3s progDisappear;
         }
-        @keyframes progDisappear{
-            0%{
-                opacity:1;
-                transform:scaleY(1);
+
+        @keyframes progDisappear {
+            0% {
+                opacity: 1;
+                transform: scaleY(1);
             }
-            80%{
-                opacity:1;
-                transform:scaleY(1);
+
+            80% {
+                opacity: 1;
+                transform: scaleY(1);
             }
-            99%{
-                oppacity:0;
-                transform:scaleY(0);
+
+            99% {
+                oppacity: 0;
+                transform: scaleY(0);
             }
-            100%{
-                display:none;
+
+            100% {
+                display: none;
             }
         }
     </style>
