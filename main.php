@@ -442,6 +442,7 @@ ob_end_clean();
                 <input type=text name="message" id="message" value="<?= htmlspecialchars($message ?? "") ?>">
                 <label for=rows_amount>Nombre de colonnes (appuyer sur encrypter pour actualiser la vue d'entrée de la matrice ci-dessous):
                     <input type=number name="rows_amount" id="rows_amount" value="<?= htmlspecialchars($rows_amount) ?>" required=true></label>
+                <p>Le changement de taille de matrice peut ne pas marcher si vous avez un texte dans la ligne du texte à encrypter, si c'est le cas appuyez sur "réinitialiser le formulaire" en bas du formulaire et retentez de changer la taille de matrice.</p>
                 <div class=equationstart>
                     <table>
                         <?php for ($i = 0; $i < $rows_amount; $i++) { ?>
@@ -465,6 +466,7 @@ ob_end_clean();
         </details>
     </main>
     <footer>
+        <p>En cas de bug ne pas hésiter à <a href="https://gzod01.fr/contact">contacter le développeur</a></p>
         <button onclick="document.querySelector(':root').className='';">Thème Clair (experimental)</button>
         <button onclick="document.querySelector(':root').className='matrix';">Thème Sombre (experimental)</button>
         <button onclick="navigator.share({title:'SuperEncrypt',text:'SuperEncrypt tool made by GZod01',url:window.location.href});">Partager l'outil</button>
