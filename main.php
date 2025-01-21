@@ -535,5 +535,5 @@ ob_end_clean();
             font-size: 0.7em;
         }
     </style>
-    <p class=copyright>Copyright &copy; 2024 <a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</p>
+    <p class=copyright>Copyright &copy; 2024 <strong><a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</strong></p>
 </body>
