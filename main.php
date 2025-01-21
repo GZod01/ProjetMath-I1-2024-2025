@@ -456,6 +456,7 @@ ob_end_clean();
     <style>
         :root{
             --bgcolor : #f0f0f0;
+            --bgdarken: #e0e0e0;
             --color:black;
         }
         body {
@@ -469,6 +470,13 @@ ob_end_clean();
             margin: 0px;
             padding: 0px;
             background-color:var(--bgcolor);
+        }
+        input{
+            background:var(--bgdarken);
+            color:var(--color);
+        }
+        fieldset{
+            border:var(--color);
         }
 
         .form .equationstart {
