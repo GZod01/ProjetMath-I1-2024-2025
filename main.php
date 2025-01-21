@@ -476,7 +476,7 @@ ob_end_clean();
             color:var(--color);
         }
         fieldset{
-            border:var(--color);
+            border-color:var(--color);
         }
 
         .form .equationstart {
