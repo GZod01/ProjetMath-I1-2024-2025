@@ -452,7 +452,7 @@ ob_end_clean();
         <summary>show debug</summary>
         <?= $preoutput ?>
     </details>
-    <button onclick="document.root.className='matrix';">ToMat</button>
+    <button onclick="document.querySelector(':root').className='matrix';">ToMat</button>
 
     <style>
         :root{
