@@ -484,7 +484,7 @@ ob_end_clean();
         :root.matrix {
             --bgcolor: #101010;
             --bgdarken: #303030;
-            --color: green;
+            --color: lime;
             transition: all .5s ease;
         }
 
