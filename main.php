@@ -402,7 +402,7 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
     $echostr .= "<fieldset class=base><legend>Reverse Base:</legend><div class=equationstart>" . strMatrix($baseInv) . "</div></fieldset></div>";
     $echostr .= "<fieldset class=encrypted>";
     $echostr .= "<legend>Result message</legend>";
-    $echostr .= "<span id=superresulttocopy onclick=\"navigator.clipboard.writeText(this.innerText)\">";
+    $echostr .= "<span id=superresulttocopy onclick=\"copyClipBoard(this)\">";
 
     if ($action == "decrypt") {
         $echostr .= htmlspecialchars(decrypt($message, $baseInv, $rows_amount));
@@ -420,6 +420,12 @@ ob_end_clean();
 ?>
 
 <body>
+    <script>
+        function copyClipBoard(el){
+            navigator.clipboard.writeText(el.innerText);
+            alert("Copied to clipboard");
+        }
+    </script>
     <div class=superLine>
         <?= $echostr ?>
         <form action="" class=form method="get">
