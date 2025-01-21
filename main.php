@@ -452,12 +452,20 @@ ob_end_clean();
         <summary>show debug</summary>
         <?= $preoutput ?>
     </details>
+    <button onclick="document.root.className='matrix';">ToMat</button>
 
     <style>
         :root{
             --bgcolor : #f0f0f0;
             --bgdarken: #e0e0e0;
             --color:black;
+            transition: all .5s ease;
+        }
+        :root.matrix{
+            --bgcolor:#101010;
+            --bgdarken:#303030;
+            --color:green;
+            transition:all .5s ease;
         }
         body {
             color: var(--color);
