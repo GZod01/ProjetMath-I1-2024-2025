@@ -454,7 +454,12 @@ ob_end_clean();
     </details>
 
     <style>
+        :root{
+            --bgcolor : #f0f0f0;
+            --color:black;
+        }
         body {
+            color: var(--color);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -463,7 +468,7 @@ ob_end_clean();
             width: 100%;
             margin: 0px;
             padding: 0px;
-            background-color: #f0f0f0;
+            background-color:var(--bgcolor);
         }
 
         .form .equationstart {
@@ -474,7 +479,7 @@ ob_end_clean();
         .preoutput {
             max-width: 80%;
             width: 80%;
-            border: 2px solid black;
+            border: 2px solid var(--color);
             border-radius: 5px;
             padding: 10px;
             margin: 10px;
@@ -484,7 +489,7 @@ ob_end_clean();
                 flex-direction: row;
                 flex-wrap: wrap;
                 align-items: center;
-                border: 1px solid black;
+                border: 1px solid var(--color);
             }
         }
 
@@ -503,7 +508,7 @@ ob_end_clean();
                 margin: 5px;
                 padding: 10px;
                 border-radius: 5px;
-                border: 1px solid black;
+                border: 1px solid var(--color);
             }
         }
 
@@ -517,7 +522,7 @@ ob_end_clean();
                 display: block;
                 margin: 0 10px;
                 border-collapse: collapse;
-                border: 2px solid black;
+                border: 2px solid var(--color);
                 border-radius: 5px;
                 border-top: 0px solid transparent;
                 border-bottom: 0px solid transparent;
@@ -532,7 +537,7 @@ ob_end_clean();
 
         .result {
             display: flex;
-            border: 2px solid black;
+            border: 2px solid var(--color);
             border-radius: 5px;
             flex-direction: column;
             padding: 10px;
