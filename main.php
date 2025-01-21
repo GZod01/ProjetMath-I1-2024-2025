@@ -427,6 +427,9 @@ ob_end_clean();
             navigator.clipboard.writeText(el.innerText);
             document.querySelector("#alerttextcopied").className="";
             document.querySelector('#alerttextcopied').className="visible";
+            setTimeout(()=>{
+                document.querySelector("#alerttextcopied").className="";
+            },3000);
         }
     </script>
     <div class=superLine>
@@ -576,7 +579,8 @@ ob_end_clean();
             font-family: 'Courier New', Courier, monospace;
         }
         #alerttextcopied{
-            height:calc(20px + 2em);
+            --mysuperheight:30px;
+            height:var(--mysuperheight);
             display:none;
             background:lime;
             color:white;
@@ -588,16 +592,16 @@ ob_end_clean();
         }
         #alerttextcopied.visible{
             display:block;
-            animation:progDisappear 3s ease 1;
+            animation:3s progDisappear;
         }
         @keyframes progDisappear{
             0%{
                 opacity:1;
-                height:calc(20px + 2em);
+                height:var(--mysuperheight);
             }
             80%{
                 opacity:1;
-                height:calc(20px + 2em);
+                height:var(--mysuperheight);
             }
             99%{
                 oppacity:0;
