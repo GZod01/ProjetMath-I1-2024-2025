@@ -597,15 +597,15 @@ ob_end_clean();
         @keyframes progDisappear{
             0%{
                 opacity:1;
-                height:var(--mysuperheight);
+                transform:scaleY(1);
             }
             80%{
                 opacity:1;
-                height:var(--mysuperheight);
+                transform:scaleY(1);
             }
             99%{
                 oppacity:0;
-                height:0;
+                transform:scaleY(0);
             }
             100%{
                 display:none;
