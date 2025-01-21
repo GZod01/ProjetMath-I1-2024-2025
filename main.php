@@ -605,7 +605,7 @@ ob_end_clean();
         }
 
         .copyright {
-            font-size: 0.7em;
+            font-size: 0.4em;
             font-family: 'Courier New', Courier, monospace;
         }
 
