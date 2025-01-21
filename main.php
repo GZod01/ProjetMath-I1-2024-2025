@@ -24,6 +24,12 @@ function showMatrix($matrix)
     echo strMatrix($matrix);
 }
 
+function strToOkHTML($str){
+    $nstr = htmlspecialchars($str);
+    $nstr = str_replace(" ", "&#9633;", $nstr);
+    return $nstr;
+}
+
 // matrice vers texte
 function strMatrix($t)
 {
@@ -32,15 +38,16 @@ function strMatrix($t)
         $stroutput .= "<tr>";
         if (is_array($row)) {
             foreach ($row as $cell) {
-                $stroutput .= "<td>$cell</td>";
+                $ncell = strToOkHTML($cell);
+                $stroutput .= "<td>$ncell</td>";
             }
         } else {
-            $stroutput .= "<td>$row</td>";
+            $nrow = strToOkHTML($row);
+            $stroutput .= "<td>$nrow</td>";
         }
         $stroutput .= "</tr>";
     }
     $stroutput .= "</table>";
-    str_replace(" ", "&#9633;", $stroutput);
     return $stroutput;
 }
 
