@@ -531,9 +531,9 @@ ob_end_clean();
                 overflow: auto;
             }
         }
-        .description{
-            display:none;
+        .copyright{
+            font-size: 0.7em;
         }
     </style>
-    <p class=description>Made with ❤️ by <strong><a href="https://gzod01.fr">GZod01</a></strong>, helped by <a href="https://gemini.google.com">Google Gemini</a> and <a href="https://github.com/copilot">GitHub Copilot</a></p>
+    <p class=copyright>Copyright &copy; 2024 <a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</p>
 </body>
