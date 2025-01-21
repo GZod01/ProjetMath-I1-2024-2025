@@ -533,6 +533,7 @@ ob_end_clean();
         }
         .copyright{
             font-size: 0.7em;
+            font-family: 'Courier New', Courier, monospace;
         }
     </style>
     <p class=copyright>Copyright &copy; 2024 <strong><a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</strong></p>
