@@ -199,11 +199,11 @@ function modifierMatriceAvecPremiers($matrice)
     global $charlist;
     $m = mb_strlen($charlist);
 
-    $nombresPremiers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+    $nombresPremiers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79];
 
     foreach ($nombresPremiers as $premier) {
         if (pgcd($m, $premier) != 1) {
-            return "Erreur : m doit être premier avec tous les nombres premiers.";
+            trigger_error("Erreur : m doit être premier avec tous les nombres premiers.");
         }
     }
 
