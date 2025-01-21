@@ -461,8 +461,11 @@ ob_end_clean();
         <summary>show debug</summary>
         <?= $preoutput ?>
     </details>
-    <button onclick="document.querySelector(':root').className='matrix';">ToMat</button>
-
+    <button onclick="document.querySelector(':root').className='';">Thème Clair (experimental)</button>
+    <button onclick="document.querySelector(':root').className='matrix';">Thème Sombre (experimental)</button>
+    <button onclick="navigator.share({title:'SuperEncrypt',text:'SuperEncrypt tool made by GZod01',url:window.location.href});">Partager l'outil</button>
+    <p class=copyright>Copyright &copy; 2024 <strong><a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</strong></p>
+    <p class=copyright>Fait dans le cadre du projet mathématique en I1 à UniLaSalle Amiens dans l'année 2024-2025</p>
     <style>
         :root{
             --bgcolor : #f0f0f0;
@@ -616,5 +619,4 @@ ob_end_clean();
             }
         }
     </style>
-    <p class=copyright>Copyright &copy; 2024 <strong><a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</strong></p>
 </body>
