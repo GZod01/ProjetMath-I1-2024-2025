@@ -251,7 +251,9 @@ if (isset($_REQUEST["base"])) {
         $baseArr = castIntArray(str_contains(",", $_REQUEST["base"]) ? explode(",", $_REQUEST["base"]) : str_split($_REQUEST["base"]));
     }
 }
-
+if(isset($_REQUEST["generate_matrix"]) and $_REQUEST["generate_matrix"]=="on"){
+    $base = modifierMatriceAvecPremiers($base);
+}
 // pour un array avec uniquement des entiers
 function castIntArray($arr)
 {
@@ -443,12 +445,13 @@ ob_end_clean();
                     <?php for ($i = 0; $i < $rows_amount; $i++) { ?>
                         <tr>
                             <?php for ($j = 0; $j < $rows_amount; $j++) { ?>
-                                <td><input type=number name="base[]" id="base<?= strval($i) . strval($j); ?>" value="<?= htmlspecialchars($base[$i][$j]) ?>" required=true></td>
+                                <td><input type=number name="base[]" id="base<?= strval($i) . strval($j); ?>" value="<?= htmlspecialchars($base[$i][$j]) ?>"></td>
                             <?php } ?>
                         </tr>
                     <?php } ?>
                 </table>
             </div>
+            <label for=generate_matrix>Génerer une matrice avec des nombres premiers: <input type=checkbox name="generate_matrix" id="generate_matrix"></label>
             <input type=submit name="action" id="action" value="encrypt">
             <input type=submit name="action" id="action" value="decrypt">
         </form>
