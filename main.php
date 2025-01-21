@@ -402,6 +402,7 @@ if (isset($_REQUEST["message"]) and $_REQUEST["message"] != "") {
     $echostr .= "<fieldset class=base><legend>Reverse Base:</legend><div class=equationstart>" . strMatrix($baseInv) . "</div></fieldset></div>";
     $echostr .= "<fieldset class=encrypted>";
     $echostr .= "<legend>Result message</legend>";
+    $echostr .= "<span id=alerttextcopied>Texte copié</span>";
     $echostr .= "<span id=superresulttocopy onclick=\"copyClipBoard(this)\">";
 
     if ($action == "decrypt") {
@@ -424,7 +425,8 @@ ob_end_clean();
     <script>
         function copyClipBoard(el){
             navigator.clipboard.writeText(el.innerText);
-            alert("Copied to clipboard");
+            document.querySelector("#alerttextcopied").className="";
+            document.querySelector('#alerttextcopied').className="visible";
         }
     </script>
     <div class=superLine>
@@ -572,6 +574,34 @@ ob_end_clean();
         .copyright{
             font-size: 0.7em;
             font-family: 'Courier New', Courier, monospace;
+        }
+        #alerttextcopied{
+            display:none;
+            background:lime;
+            color:white;
+            padding:10px;
+            border-radius:5px;
+            font-size:1.5em;
+            font-weight:bold;
+            text-align:center;
+        }
+        #alertextcopied.visible{
+            display:block;
+            animation:progDisappear 3s;
+        }
+        @keyframes progDisappear{
+            0%{
+                opacity:1;
+            }
+            80%{
+                opacity:1;
+            }
+            99%{
+                oppacity:0;
+            }
+            100%{
+                display:none;
+            }
         }
     </style>
     <p class=copyright>Copyright &copy; 2024 <strong><a href="https://gzod01.fr">GZod01</a> (Aurélien SÉZILLE)</strong></p>
