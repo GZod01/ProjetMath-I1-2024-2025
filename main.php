@@ -585,7 +585,7 @@ ob_end_clean();
             font-weight:bold;
             text-align:center;
         }
-        #alertextcopied.visible{
+        #alerttextcopied.visible{
             display:block;
             animation:progDisappear 3s;
         }
