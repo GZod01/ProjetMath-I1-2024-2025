@@ -40,6 +40,7 @@ function strMatrix($t)
         $stroutput .= "</tr>";
     }
     $stroutput .= "</table>";
+    str_replace(" ", "&nbsp;", $stroutput);
     return $stroutput;
 }
 
